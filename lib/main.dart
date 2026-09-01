@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const LibraryApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LibraryApp extends StatelessWidget {
+  const LibraryApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return const MaterialApp(
+      title: 'Library Management',
+      home: Scaffold(
+        body: Center(child: Text('Coming soon')),
       ),
-      home: const SplashScreen(),
     );
   }
 }
