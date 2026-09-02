@@ -39,6 +39,39 @@ class AppTheme {
           borderSide: BorderSide.none,
         ),
       ),
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: AppColors.surface,
+          indicatorColor: AppColors.primary,
+          elevation: 0,
+          height: 64,
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            final selected = states.contains(WidgetState.selected);
+            return AppTextStyles.caption.copyWith(
+              color: selected ? AppColors.primaryPressed : AppColors.textSecondary,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+            );
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            final selected = states.contains(WidgetState.selected);
+            return IconThemeData(color: selected ? AppColors.primaryPressed : AppColors.textSecondary, size: 22);
+          }),
+        ),
+        searchBarTheme: SearchBarThemeData(
+          backgroundColor: const WidgetStatePropertyAll(AppColors.surface),
+          elevation: const WidgetStatePropertyAll(0),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.pill)),
+          ),
+          textStyle: WidgetStatePropertyAll(AppTextStyles.bodyMd),
+          hintStyle: WidgetStatePropertyAll(AppTextStyles.bodyMd.copyWith(color: AppColors.textSecondary)),
+          padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 4)),
+        ),
+        cardTheme: CardThemeData(
+          color: AppColors.surface,
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+        ),
     );
   }
 }

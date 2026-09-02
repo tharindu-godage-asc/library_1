@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 /// Type ramp — Bricolage Grotesque for display/headings (the bold,
@@ -8,43 +7,53 @@ import 'app_colors.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  static final displayLg = GoogleFonts.bricolageGrotesque(
+  static const _bricolageGrotesque = 'Bricolage Grotesque';
+  static const _plusJakartaSans = 'Plus Jakarta Sans';
+
+  static const displayLg = TextStyle(
+    fontFamily: _bricolageGrotesque,
     fontSize: 32,
     fontWeight: FontWeight.w800,
     color: AppColors.textPrimary,
   );
 
-  static final headingLg = GoogleFonts.bricolageGrotesque(
+  static const headingLg = TextStyle(
+    fontFamily: _bricolageGrotesque,
     fontSize: 24,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
   );
 
-  static final headingMd = GoogleFonts.bricolageGrotesque(
+  static const headingMd = TextStyle(
+    fontFamily: _bricolageGrotesque,
     fontSize: 20,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
   );
 
-  static final bodyLg = GoogleFonts.plusJakartaSans(
+  static const bodyLg = TextStyle(
+    fontFamily: _plusJakartaSans,
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
   );
 
-  static final bodyMd = GoogleFonts.plusJakartaSans(
+  static const bodyMd = TextStyle(
+    fontFamily: _plusJakartaSans,
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
   );
 
-  static final label = GoogleFonts.plusJakartaSans(
+  static const label = TextStyle(
+    fontFamily: _plusJakartaSans,
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static final caption = GoogleFonts.plusJakartaSans(
+  static const caption = TextStyle(
+    fontFamily: _plusJakartaSans,
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,

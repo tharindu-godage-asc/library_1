@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import '../../../../core/error/failure.dart';
 import '../entities/book.dart';
 
 /// Domain declares what it needs; data layer decides how. This is the
@@ -5,6 +7,6 @@ import '../entities/book.dart';
 /// API implementation later without this file — or anything above it —
 /// changing at all.
 abstract class BookRepository {
-  Future<List<Book>> getBooks();
-  Future<Book> getBookById(String id);
+  Future<Either<Failure, List<Book>>> getBooks();
+  Future<Either<Failure, Book>> getBookById(String id);
 }

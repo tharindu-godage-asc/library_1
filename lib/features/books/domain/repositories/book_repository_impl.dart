@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import '../../../../core/error/failure.dart';
 import '../../domain/entities/book.dart';
 import '../../domain/repositories/book_repository.dart';
 import '../../data/datasources/book_mock_datasource.dart';
@@ -7,14 +9,22 @@ class BookRepositoryImpl implements BookRepository {
   final BookMockDataSource _dataSource;
 
   @override
-  Future<List<Book>> getBooks() async {
-    final models = await _dataSource.fetchBooks();
-    return models.map((m) => m.toEntity()).toList();
+  Future<Either<Failure, List<Book>>> getBooks() async {
+    try {
+      final models = await _dataSource.fetchBooks();
+      return Right(models.map((m) => m.toEntity()).toList());
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
   }
 
   @override
-  Future<Book> getBookById(String id) async {
-    final model = await _dataSource.fetchBookById(id);
-    return model.toEntity();
+  Future<Either<Failure, Book>> getBookById(String id) async {
+    try {
+      final model = await _dataSource.fetchBookById(id);
+      return Right(model.toEntity());
+    } catch (e) {
+      return Left(NotFoundFailure(e.toString()));
+    }
   }
 }

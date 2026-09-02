@@ -33,12 +33,11 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
 
   Future<void> _load() async {
     setState(() => _error = null);
-    try {
-      final book = await _getBookById(widget.bookId);
-      setState(() => _book = book);
-    } catch (e) {
-      setState(() => _error = 'Could not load this book.');
-    }
+    final result = await _getBookById(widget.bookId);
+    result.match(
+      (failure) => setState(() => _error = 'Could not load this book.'),
+      (book) => setState(() => _book = book),
+    );
   }
 
   @override

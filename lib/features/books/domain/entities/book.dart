@@ -1,7 +1,5 @@
-
-class Book{
-
-    const Book({
+class Book {
+  const Book({
     required this.id,
     required this.title,
     required this.author,
@@ -12,28 +10,50 @@ class Book{
     this.description,
   });
 
-    final String id;
-    final String title;
-    final String author;
-    final String isbn;
-    final int publishedYear;
-    final int totalCopies;
-    final int availableCopies;
-    final String? description;
-
-    bool get isAvailable => availableCopies > 0;
-
-    Book copyWith({int? availableCopies})
-    {
-      return Book(
-        id: id,
-        title: title,
-        author: author,
-        isbn: isbn,
-        publishedYear: publishedYear,
-        totalCopies: totalCopies,
-        availableCopies: availableCopies ?? this.availableCopies,
-        description: description,
+  /// Default fallback state for initializations or tests
+  factory Book.empty() => const Book(
+        id: '',
+        title: '',
+        author: '',
+        isbn: '',
+        publishedYear: 1970,
+        totalCopies: 0,
+        availableCopies: 0,
+        description: null,
       );
-    }
+
+  final String id;
+  final String title;
+  final String author;
+  final String isbn;
+  final int publishedYear;
+  final int totalCopies;
+  final int availableCopies;
+  final String? description;
+
+  /// Business logic getter
+  bool get isAvailable => availableCopies > 0;
+
+  /// Allows updating properties without mutating original instances
+  Book copyWith({
+    String? id,
+    String? title,
+    String? author,
+    String? isbn,
+    int? publishedYear,
+    int? totalCopies,
+    int? availableCopies,
+    String? description,
+  }) {
+    return Book(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      author: author ?? this.author,
+      isbn: isbn ?? this.isbn,
+      publishedYear: publishedYear ?? this.publishedYear,
+      totalCopies: totalCopies ?? this.totalCopies,
+      availableCopies: availableCopies ?? this.availableCopies,
+      description: description ?? this.description,
+    );
+  }
 }

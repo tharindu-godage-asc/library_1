@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_text_styles.dart';
 
 class AppNavItem {
-  const AppNavItem({required this.icon, required this.label});
+  const AppNavItem({required this.icon, required this.label, this.selectedIcon});
   final IconData icon;
+  final IconData? selectedIcon;
   final String label;
 }
 
-/// Purely presentational — takes the current index and a callback.
-/// Real navigation wiring happens in Phase: Routing, not here.
+/// Thin wrapper around Material's NavigationBar — same public API as
+/// before, so call sites (BooksScreen, and later Borrowings/Profile
+/// screens) don't need to change. Real navigation wiring still happens
+/// in the Routing phase, not here.
 class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({
     super.key,
@@ -24,28 +25,16 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.surface,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (i) {
-          final active = i == currentIndex;
-          final color = active ? AppColors.primaryPressed : AppColors.textSecondary;
-          return GestureDetector(
-            onTap: () => onTap(i),
-            behavior: HitTestBehavior.opaque,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(items[i].icon, color: color, size: 22),
-                const SizedBox(height: 2),
-                Text(items[i].label, style: AppTextStyles.caption.copyWith(color: color)),
-              ],
-            ),
-          );
-        }),
-      ),
+    return NavigationBar(
+      selectedIndex: currentIndex,
+      onDestinationSelected: onTap,
+      destinations: items
+          .map((item) => NavigationDestination(
+                icon: Icon(item.icon),
+                selectedIcon: Icon(item.selectedIcon ?? item.icon),
+                label: item.label,
+              ))
+          .toList(),
     );
   }
 }
