@@ -9,7 +9,7 @@ import '../../data/datasources/book_mock_datasource.dart';
 import '../../domain/repositories/book_repository_impl.dart';
 import '../../domain/entities/book.dart';
 import '../../domain/usecases/get_books.dart';
-import '../widgets/book_card.dart';
+import '../widgets/book_vertical_card.dart';
 import '../screens/book_details_screen.dart';
 
 enum _LoadState { loading, success, empty, error }
@@ -106,12 +106,17 @@ class _BooksScreenState extends State<BooksScreen> {
       case _LoadState.empty:
         return const EmptyView(message: 'No books available yet.');
       case _LoadState.success:
-        return ListView.separated(
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 130,
+            mainAxisExtent: 210,
+            crossAxisSpacing: AppSpacing.sm,
+            mainAxisSpacing: AppSpacing.sm,
+          ),
           itemCount: _books.length,
-          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
           itemBuilder: (context, i) {
             final book = _books[i];
-            return BookCard(
+            return BookVerticalCard(
               book: book,
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => BookDetailsScreen(bookId: book.id)),

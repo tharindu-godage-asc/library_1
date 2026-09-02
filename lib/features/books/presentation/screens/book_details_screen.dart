@@ -58,10 +58,19 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         children: [
           Container(
             width: 140,
-            height: 190,
+            height: 210,
             decoration: BoxDecoration(
               color: AppColors.surfaceAlt,
               borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Image.asset(
+                'assets/images/book cover.jpg',
+                width: 140,
+                height: 210,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),

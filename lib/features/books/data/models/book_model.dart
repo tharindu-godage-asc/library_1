@@ -27,7 +27,7 @@ class BookModel {
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(
-      id: json['id'] as String,
+      id: json['id'].toString(),
       title: json['title'] as String,
       author: json['author'] as String,
       isbn: json['isbn'] as String,

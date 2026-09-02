@@ -11,16 +11,16 @@ class BookMockDataSource {
  
   Future<List<BookModel>> fetchBooks() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    final books = await rootBundle.loadString('assets/mock_data/books.json');
+    final books = await rootBundle.loadString('assets/data/books.json');
     final booksList = json.decode(books) as List;
     return booksList.map((b) => BookModel.fromJson(b)).toList();
   }
 
   Future<BookModel> fetchBookById(String id) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    final books = await rootBundle.loadString('assets/mock_data/books.json');
+    final books = await rootBundle.loadString('assets/data/books.json');
     final booksList = json.decode(books) as List;
-    final match = booksList.where((b) => b['id'] == id);
+    final match = booksList.where((b) => b['id'].toString() == id);
     if (match.isEmpty) {
       throw Exception('Book not found: $id');
     }
