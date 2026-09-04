@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'features/books/presentation/screens/books_screen.dart';
+import 'features/splash/splash_screen.dart';
 
 void main() {
-  runApp(const LibraryApp());
+  runApp(const ProviderScope(child: LibraryApp()));
 }
 
 class LibraryApp extends StatelessWidget {
@@ -15,6 +17,7 @@ class LibraryApp extends StatelessWidget {
       title: 'BooksnU',
       theme: AppTheme.light,
       home: const BooksScreen(),
+      // home: const SplashScreen(),
     );
   }
 }
