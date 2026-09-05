@@ -14,3 +14,11 @@ class NotFoundFailure extends Failure {
 class UnexpectedFailure extends Failure {
   const UnexpectedFailure(super.message);
 }
+
+class InvalidCredentialsFailure extends Failure {
+  const InvalidCredentialsFailure(super.message);
+}
+
+class EmailAlreadyExistsFailure extends Failure {
+  const EmailAlreadyExistsFailure(super.message);
+}
