@@ -9,6 +9,5 @@ class GetBooks implements UseCase<List<Book>, NoParams> {
   final BookRepository _repository;
 
   @override
-  Future<Either<Failure, List<Book>>> call([NoParams params = const NoParams()]) =>
-      _repository.getBooks();
+  Future<Either<Failure, List<Book>>> call([NoParams params = const NoParams()]) => _repository.getBooks();
 }

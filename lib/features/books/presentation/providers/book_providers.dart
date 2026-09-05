@@ -1,47 +1,51 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/datasources/book_mock_datasource.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../data/datasources/book_local_datasource.dart';
 import '../../data/repositories/book_repository_impl.dart';
 import '../../domain/entities/book.dart';
 import '../../domain/repositories/book_repository.dart';
 import '../../domain/usecases/get_book_by_id.dart';
 import '../../domain/usecases/get_books.dart';
 
-// ---- Composition root for the Books feature ----------------------------
-// This is the Dependency Injection phase's actual job, showing up early
-// because Riverpod's provider graph does it as a side effect: each layer
-// is wired to the one below it exactly once, here — not re-constructed
-// inside every screen the way Phase 2 did it.
+part 'book_providers.g.dart';
 
-final bookMockDataSourceProvider = Provider<BookMockDataSource>((ref) {
-  return BookMockDataSource();
-});
+@riverpod
+BookLocalDataSource bookLocalDataSource(Ref ref) => BookLocalDataSourceImpl();
 
-final bookRepositoryProvider = Provider<BookRepository>((ref) {
-  return BookRepositoryImpl(ref.watch(bookMockDataSourceProvider));
-});
+@riverpod
+BookRepository bookRepository(Ref ref) =>
+    BookRepositoryImpl(ref.read(bookLocalDataSourceProvider));
 
-final getBooksProvider = Provider<GetBooks>((ref) {
-  return GetBooks(ref.watch(bookRepositoryProvider));
-});
+@riverpod
+GetBooks getBooksUseCase(Ref ref) => GetBooks(ref.read(bookRepositoryProvider));
 
-final getBookByIdProvider = Provider<GetBookById>((ref) {
-  return GetBookById(ref.watch(bookRepositoryProvider));
-});
+@riverpod
+GetBookById getBookByIdUseCase(Ref ref) => GetBookById(ref.read(bookRepositoryProvider));
 
-// ---- App state the screens actually consume -----------------------------
+/// AsyncNotifier because it's the generated-code equivalent of the old
+/// FutureProvider — `build()` runs once, result is cached, and
+/// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
+/// outside) re-runs it. `.match()` unwraps the Either right here so
+/// nothing downstream has to think about Left/Right — the UI only ever
+/// sees a plain AsyncValue<List<Book>>, same as before this change.
+@riverpod
+class BookList extends _$BookList {
+  @override
+  Future<List<Book>> build() async {
+    final useCase = ref.read(getBooksUseCaseProvider);
+    final result = await useCase();
+    return result.match(
+      (failure) => throw Exception(failure.message),
+      (books) => books,
+    );
+  }
+}
 
-/// Fetches once, caches the result across every widget that watches it.
-/// `ref.invalidate(booksProvider)` re-runs it — that's what "Retry" now
-/// calls, and what a future pull-to-refresh would call too.
-final booksProvider = FutureProvider<List<Book>>((ref) async {
-  final getBooks = ref.watch(getBooksProvider);
-  return getBooks();
-});
-
-/// `.family` because it's parameterized by id — Riverpod caches each
-/// (provider, id) pair independently, so book "b1" and book "b2" don't
-/// share or overwrite each other's loading/data/error state.
-final bookByIdProvider = FutureProvider.family<Book, String>((ref, id) async {
-  final getBookById = ref.watch(getBookByIdProvider);
-  return getBookById(id);
-});
+@riverpod
+Future<Book> bookById(Ref ref, String id) async {
+  final useCase = ref.read(getBookByIdUseCaseProvider);
+  final result = await useCase(id);
+  return result.match(
+    (failure) => throw Exception(failure.message),
+    (book) => book,
+  );
+}

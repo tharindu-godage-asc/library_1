@@ -28,20 +28,17 @@ class BookVerticalCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 120,
-                height: 135,
-                color: AppColors.surfaceAlt,
-                child: Image.asset(
-                  'assets/images/book cover.jpg',
-                  width: 120,
-                  height: 135,
-                  fit: BoxFit.cover,
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  color: AppColors.surfaceAlt,
+                  child: const Icon(Icons.menu_book_outlined, color: AppColors.textSecondary),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(book.title, style: AppTextStyles.bodyMd, maxLines: 2, overflow: TextOverflow.ellipsis),
