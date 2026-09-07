@@ -18,4 +18,8 @@ abstract class AuthRepository {
     required String phoneNumber,
     required String password,
   });
+
+  Future<Either<Failure, AuthSession?>> restoreSession();
+
+  Future<Either<Failure, Unit>> logout();
 }
