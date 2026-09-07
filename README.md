@@ -3,9 +3,9 @@
 *Read more. Discover more.*
 
 A Flutter library-management app, built feature-by-feature as a series of
-documented phases (see [`docs/`](docs/)). Currently implements a full
-vertical slice of the **Books** feature; other features are scaffolded but
-not yet built.
+documented phases (see [`docs/`](docs/)). Currently implements full
+vertical slices of the **Books** and **Auth** features; other features are
+scaffolded but not yet built.
 
 ## Architecture
 
@@ -38,8 +38,8 @@ the `UseCase` base class, design tokens, reusable widgets) lives in
 | Feature | Status |
 |---|---|
 | Books | Implemented — list, search, details, sorted "Newest Picks" / "Recommended" rails, bundled-JSON data source |
+| Auth | Implemented — Login/Register against an in-memory seeded mock data source; no persistence across cold starts yet |
 | Borrowings | Scaffolded only (empty folders) — bottom-nav tab is a placeholder |
-| Auth | Scaffolded only |
 | Members / Profile | Scaffolded only |
 | Splash | Screen exists, not yet wired into app startup |
 
@@ -61,10 +61,10 @@ lib/
   core/            design tokens, reusable widgets, error types, UseCase base
   features/
     books/         domain / data / presentation — fully implemented
+    auth/          domain / data / presentation — fully implemented
     borrowings/    scaffolded
-    auth/          scaffolded
     members/       scaffolded
-    splash/        splash_screen.dart only
+    splash/        splash_screen.dart only, not yet wired as home:
   main.dart
 docs/              one dated write-up per phase: objective, what was built,
                    bugs found, decisions made, open items, next phase
@@ -74,6 +74,7 @@ docs/              one dated write-up per phase: objective, what was built,
 
 - [`docs/phase-01-theme-and-core-widgets.md`](docs/phase-01-theme-and-core-widgets.md) — design tokens, reusable widgets
 - [`docs/phase-02-books-vertical-slice.md`](docs/phase-02-books-vertical-slice.md) — Books feature end-to-end, Riverpod conversion, search
+- [`docs/phase-03-auth-vertical-slice.md`](docs/phase-03-auth-vertical-slice.md) — Auth feature end-to-end (Login/Register), mock in-memory accounts
 
 ## TODO
 
@@ -84,10 +85,21 @@ docs/              one dated write-up per phase: objective, what was built,
   to pass a well-formed primitive.
 - Borrowings feature — real data behind the reminder banner and the
   Borrowings bottom-nav tab (currently hardcoded mock due-dates).
-- Auth feature.
 - Members / Profile feature.
-- Wire `SplashScreen` into actual app startup (`main.dart`'s `home:` still
-  points at `BooksScreen` directly).
+- Wire `SplashScreen` into actual app startup (`main.dart`'s `home:` now
+  points at `LoginScreen` directly, with `SplashScreen`'s line still
+  commented out).
+- Session persistence for Auth — every cold start begins signed out; no
+  secure storage or token refresh yet.
+- Reconcile `LoginUser`/`RegisterMember` with the shared
+  `UseCase<Result, Params>` base — their named-parameter signatures don't
+  fit its single-`Params` shape, so Auth's use cases don't implement it
+  while Books' do. Either give `UseCase` a params-object convention or stop
+  treating it as universal.
+- Real automated tests — `test/widget_test.dart` is still the default
+  Flutter counter-app template (references `MyApp`, not this project's
+  `LibraryApp`). No coverage exists for `BookList`/`AuthController` or any
+  use case.
 - Per-book cover images — no cover field exists yet in `Book`/`BookModel`/
   `books.json`; cards currently show a generic icon placeholder.
 - Remove `assets/images/book cover.jpg` (and its `pubspec.yaml` entry) —

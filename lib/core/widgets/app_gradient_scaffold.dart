@@ -20,6 +20,7 @@ class AppGradientScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundBottom,
       extendBodyBehindAppBar: true,
       appBar: appBar,
       bottomNavigationBar: bottomNavigationBar,

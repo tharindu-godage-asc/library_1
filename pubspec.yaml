@@ -67,6 +67,9 @@ flutter:
   assets:
     - assets/data/books.json
     - assets/images/book cover.jpg
+    - assets/illustrations/illustration-onboarding-discover.png
+    - assets/illustrations/illustration-onboarding-borrow.png
+    - assets/illustrations/illustration-onboarding-milestones.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
