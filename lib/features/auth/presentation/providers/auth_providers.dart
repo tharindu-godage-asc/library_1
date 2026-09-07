@@ -40,18 +40,16 @@ RestoreSession restoreSessionUseCase(Ref ref) => RestoreSession(ref.read(authRep
 LogoutUser logoutUserUseCase(Ref ref) => LogoutUser(ref.read(authRepositoryProvider));
 
 
-/// Holds the current session as an AsyncValue<AuthSession?>:
+/// Holds the current session as an `AsyncValue<AuthSession?>`:
 ///  - AsyncData(null)   -> signed out (the only state possible right now —
 ///                          there's no persistence yet, so every cold
 ///                          start begins here; that's next slice's job)
 ///  - AsyncLoading()    -> a login/register call is in flight
 ///  - AsyncData(session)-> signed in
 ///  - AsyncError(...)   -> the last attempt failed; session is still null
-@riverpod
+@Riverpod(keepAlive: true)
 class AuthController extends _$AuthController {
   @override
-  AsyncValue<AuthSession?> build() => const AsyncData(null);
-
   Future<AuthSession?> build() async {
     final useCase = ref.read(restoreSessionUseCaseProvider);
     final result = await useCase();
@@ -66,6 +64,7 @@ class AuthController extends _$AuthController {
     state = const AsyncLoading();
     final useCase = ref.read(loginUserUseCaseProvider);
     final result = await useCase(email: email, password: password);
+    if (!ref.mounted) return;
     state = result.match(
       (failure) => AsyncError(failure, StackTrace.current),
       (session) => AsyncData(session),
@@ -86,6 +85,7 @@ class AuthController extends _$AuthController {
       phoneNumber: phoneNumber,
       password: password,
     );
+    if (!ref.mounted) return;
     state = result.match(
       (failure) => AsyncError(failure, StackTrace.current),
       (session) => AsyncData(session),
@@ -95,6 +95,7 @@ class AuthController extends _$AuthController {
    Future<void> logout() async {
     final useCase = ref.read(logoutUserUseCaseProvider);
     await useCase(); // best-effort clear; force local state to signed-out regardless
+    if (!ref.mounted) return;
     state = const AsyncData(null);
   }
 }

@@ -59,7 +59,7 @@ class BookDetailsScreen extends ConsumerWidget {
             label: book.isAvailable ? 'Borrow' : 'Currently unavailable',
             onPressed: book.isAvailable
                 ? () {
-                    // TODO(borrowings): wire to BorrowBook use case once
+                    // // TODO(borrowings): wire to BorrowBook use case once
                     // the Borrowings feature exists.
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Borrowing feature coming in a later phase')),

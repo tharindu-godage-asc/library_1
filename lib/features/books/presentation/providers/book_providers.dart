@@ -26,7 +26,7 @@ GetBookById getBookByIdUseCase(Ref ref) => GetBookById(ref.read(bookRepositoryPr
 /// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
 /// outside) re-runs it. `.match()` unwraps the Either right here so
 /// nothing downstream has to think about Left/Right — the UI only ever
-/// sees a plain AsyncValue<List<Book>>, same as before this change.
+/// sees a plain `AsyncValue<List<Book>>`, same as before this change.
 @riverpod
 class BookList extends _$BookList {
   @override

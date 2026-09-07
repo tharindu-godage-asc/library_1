@@ -7,7 +7,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_text_field.dart';
-import '../../../books/presentation/screens/books_screen.dart';
 import '../providers/auth_providers.dart';
 import 'register_screen.dart';
 
@@ -54,15 +53,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
-
-    ref.listen(authControllerProvider, (previous, next) {
-      final session = next.value;
-      if (session != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const BooksScreen()),
-        );
-      }
-    });
 
     return AppGradientScaffold(
       body: SingleChildScrollView(

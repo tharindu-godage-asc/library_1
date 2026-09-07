@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/navigation/auth_gate.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import 'login_screen.dart';
+import '../providers/auth_providers.dart';
 
 class _OnboardingSlideData {
   const _OnboardingSlideData({required this.title, required this.illustration});
@@ -10,14 +12,14 @@ class _OnboardingSlideData {
   final Widget illustration;
 }
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
 
@@ -44,9 +46,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   bool get _isLastPage => _currentPage == _slides.length - 1;
 
-  void _finish() {
+  // Single source of truth — this is the ONLY _finish() now. It must mark
+  // onboarding complete before navigating, or appBootstrapProvider will
+  // send the user right back to onboarding on the next cold start,
+  // silently undoing the whole point of this slice.
+  Future<void> _finish() async {
+    await ref.read(onboardingPreferenceProvider).markCompleted();
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(builder: (_) => const AuthGate()),
     );
   }
 
@@ -97,8 +105,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   _NavIconButton(
                     icon: Icons.chevron_left,
-                    // Invisible (not just disabled) on the first page —
-                    // matches the mockup, which shows no back control there.
                     onPressed: _currentPage == 0 ? null : _back,
                     visible: _currentPage != 0,
                   ),
@@ -137,7 +143,6 @@ class _SlideContent extends StatelessWidget {
             child: Center(child: slide.illustration),
           ),
         ),
-
         Expanded(
           flex: 4,
           child: Container(
@@ -173,7 +178,7 @@ class _DotIndicator extends StatelessWidget {
           width: active ? 22 : 7,
           height: 7,
           decoration: BoxDecoration(
-            color: active ? AppColors.primary : AppColors.textSecondary.withOpacity(0.6),
+            color: active ? AppColors.primary : AppColors.textSecondary.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(4),
           ),
         );

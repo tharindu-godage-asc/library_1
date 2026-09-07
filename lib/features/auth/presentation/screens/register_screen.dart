@@ -7,7 +7,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_text_field.dart';
-import '../../../books/presentation/screens/books_screen.dart';
 import '../providers/auth_providers.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -70,12 +69,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
+    // RegisterScreen is pushed on top of LoginScreen, which is itself the
+    // root content AuthGate swaps reactively. AuthGate alone can't reveal
+    // BooksScreen while this route is still on top of it — so on success
+    // this pops back to root, and the already-swapped AuthGate is what the
+    // user sees. It never navigates *to* a screen, only *away* from itself.
     ref.listen(authControllerProvider, (previous, next) {
-      final session = next.value;
-      if (session != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const BooksScreen()),
-        );
+      if (next.asData?.value != null && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
       }
     });
 

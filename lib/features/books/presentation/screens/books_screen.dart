@@ -14,6 +14,7 @@ import '../widgets/book_vertical_card.dart';
 import '../widgets/reminder_banner.dart';
 import 'book_details_screen.dart';
 import 'book_search_results_screen.dart';
+import '../../../auth/presentation/providers/auth_providers.dart';
 
 class BooksScreen extends ConsumerStatefulWidget {
   const BooksScreen({super.key});
@@ -157,7 +158,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: newestPicks.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+                  separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
                   itemBuilder: (context, i) {
                     final book = newestPicks[i];
                     return BookVerticalCard(book: book, onTap: () => _openBook(book.id));
@@ -182,7 +183,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: recommended.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+                  separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
                   itemBuilder: (context, i) => BookVerticalCard(
                     book: recommended[i],
                     onTap: () => _openBook(recommended[i].id),
@@ -190,6 +191,15 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
                 ),
               ),
             ],
+             // 👇 INSERT HERE — new block, nothing else changes
+            const SizedBox(height: AppSpacing.xl),
+            Center(
+              child: TextButton(
+                onPressed: () => ref.read(authControllerProvider.notifier).logout(),
+                // TODO(members): remove once the real Profile screen's "Log out" exists
+                child: Text('Log out (temporary)', style: AppTextStyles.caption),
+              ),
+            ),
           ],
         ),
       ),

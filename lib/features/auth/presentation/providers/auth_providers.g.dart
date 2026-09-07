@@ -57,6 +57,102 @@ final class AuthLocalDataSourceProvider
 String _$authLocalDataSourceHash() =>
     r'c8ddb83d401afd75f7a248093d4bcbe2a2ef454e';
 
+@ProviderFor(secureSessionStorage)
+final secureSessionStorageProvider = SecureSessionStorageProvider._();
+
+final class SecureSessionStorageProvider
+    extends
+        $FunctionalProvider<
+          SecureSessionStorage,
+          SecureSessionStorage,
+          SecureSessionStorage
+        >
+    with $Provider<SecureSessionStorage> {
+  SecureSessionStorageProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'secureSessionStorageProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$secureSessionStorageHash();
+
+  @$internal
+  @override
+  $ProviderElement<SecureSessionStorage> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SecureSessionStorage create(Ref ref) {
+    return secureSessionStorage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SecureSessionStorage value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SecureSessionStorage>(value),
+    );
+  }
+}
+
+String _$secureSessionStorageHash() =>
+    r'9f1a8f89d256e9c8affed74e50ab3415e66459ee';
+
+@ProviderFor(onboardingPreference)
+final onboardingPreferenceProvider = OnboardingPreferenceProvider._();
+
+final class OnboardingPreferenceProvider
+    extends
+        $FunctionalProvider<
+          OnboardingPreference,
+          OnboardingPreference,
+          OnboardingPreference
+        >
+    with $Provider<OnboardingPreference> {
+  OnboardingPreferenceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'onboardingPreferenceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$onboardingPreferenceHash();
+
+  @$internal
+  @override
+  $ProviderElement<OnboardingPreference> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  OnboardingPreference create(Ref ref) {
+    return onboardingPreference(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(OnboardingPreference value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<OnboardingPreference>(value),
+    );
+  }
+}
+
+String _$onboardingPreferenceHash() =>
+    r'af3533aac1c93408d71c39da0d8d635923139d51';
+
 @ProviderFor(authRepository)
 final authRepositoryProvider = AuthRepositoryProvider._();
 
@@ -96,7 +192,7 @@ final class AuthRepositoryProvider
   }
 }
 
-String _$authRepositoryHash() => r'08d04b56bca65d6cbedb92bc8285ffc203eeded2';
+String _$authRepositoryHash() => r'199761b11b59ee2a0e1591b355ec5b16a61ec5e0';
 
 @ProviderFor(loginUserUseCase)
 final loginUserUseCaseProvider = LoginUserUseCaseProvider._();
@@ -181,7 +277,90 @@ final class RegisterMemberUseCaseProvider
 String _$registerMemberUseCaseHash() =>
     r'283d5f4bd6d7140e0a47e6f0cfec3721da8ec8d6';
 
-/// Holds the current session as an AsyncValue<AuthSession?>:
+@ProviderFor(restoreSessionUseCase)
+final restoreSessionUseCaseProvider = RestoreSessionUseCaseProvider._();
+
+final class RestoreSessionUseCaseProvider
+    extends $FunctionalProvider<RestoreSession, RestoreSession, RestoreSession>
+    with $Provider<RestoreSession> {
+  RestoreSessionUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'restoreSessionUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$restoreSessionUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<RestoreSession> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  RestoreSession create(Ref ref) {
+    return restoreSessionUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(RestoreSession value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<RestoreSession>(value),
+    );
+  }
+}
+
+String _$restoreSessionUseCaseHash() =>
+    r'3ff6ae305fd9b2f1e8f123d842bc5aac600de7c8';
+
+@ProviderFor(logoutUserUseCase)
+final logoutUserUseCaseProvider = LogoutUserUseCaseProvider._();
+
+final class LogoutUserUseCaseProvider
+    extends $FunctionalProvider<LogoutUser, LogoutUser, LogoutUser>
+    with $Provider<LogoutUser> {
+  LogoutUserUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'logoutUserUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$logoutUserUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<LogoutUser> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  LogoutUser create(Ref ref) {
+    return logoutUserUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LogoutUser value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LogoutUser>(value),
+    );
+  }
+}
+
+String _$logoutUserUseCaseHash() => r'4339d832fb3306241ebb26b2317dde9387e704d0';
+
+/// Holds the current session as an `AsyncValue<AuthSession?>`:
 ///  - AsyncData(null)   -> signed out (the only state possible right now —
 ///                          there's no persistence yet, so every cold
 ///                          start begins here; that's next slice's job)
@@ -192,7 +371,7 @@ String _$registerMemberUseCaseHash() =>
 @ProviderFor(AuthController)
 final authControllerProvider = AuthControllerProvider._();
 
-/// Holds the current session as an AsyncValue<AuthSession?>:
+/// Holds the current session as an `AsyncValue<AuthSession?>`:
 ///  - AsyncData(null)   -> signed out (the only state possible right now —
 ///                          there's no persistence yet, so every cold
 ///                          start begins here; that's next slice's job)
@@ -200,8 +379,8 @@ final authControllerProvider = AuthControllerProvider._();
 ///  - AsyncData(session)-> signed in
 ///  - AsyncError(...)   -> the last attempt failed; session is still null
 final class AuthControllerProvider
-    extends $NotifierProvider<AuthController, AsyncValue<AuthSession?>> {
-  /// Holds the current session as an AsyncValue<AuthSession?>:
+    extends $AsyncNotifierProvider<AuthController, AuthSession?> {
+  /// Holds the current session as an `AsyncValue<AuthSession?>`:
   ///  - AsyncData(null)   -> signed out (the only state possible right now —
   ///                          there's no persistence yet, so every cold
   ///                          start begins here; that's next slice's job)
@@ -214,7 +393,7 @@ final class AuthControllerProvider
         argument: null,
         retry: null,
         name: r'authControllerProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -225,19 +404,11 @@ final class AuthControllerProvider
   @$internal
   @override
   AuthController create() => AuthController();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<AuthSession?> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<AuthSession?>>(value),
-    );
-  }
 }
 
-String _$authControllerHash() => r'b0436806c7855cdf2e00f5870753902f8144dea8';
+String _$authControllerHash() => r'f70a70544b2c9eefe28ba990914a68cc7a6c458c';
 
-/// Holds the current session as an AsyncValue<AuthSession?>:
+/// Holds the current session as an `AsyncValue<AuthSession?>`:
 ///  - AsyncData(null)   -> signed out (the only state possible right now —
 ///                          there's no persistence yet, so every cold
 ///                          start begins here; that's next slice's job)
@@ -245,17 +416,16 @@ String _$authControllerHash() => r'b0436806c7855cdf2e00f5870753902f8144dea8';
 ///  - AsyncData(session)-> signed in
 ///  - AsyncError(...)   -> the last attempt failed; session is still null
 
-abstract class _$AuthController extends $Notifier<AsyncValue<AuthSession?>> {
-  AsyncValue<AuthSession?> build();
+abstract class _$AuthController extends $AsyncNotifier<AuthSession?> {
+  FutureOr<AuthSession?> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref =
-        this.ref as $Ref<AsyncValue<AuthSession?>, AsyncValue<AuthSession?>>;
+    final ref = this.ref as $Ref<AsyncValue<AuthSession?>, AuthSession?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<AuthSession?>, AsyncValue<AuthSession?>>,
+              AnyNotifier<AsyncValue<AuthSession?>, AuthSession?>,
               AsyncValue<AuthSession?>,
               Object?,
               Object?

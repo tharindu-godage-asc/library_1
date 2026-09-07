@@ -208,7 +208,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               fontWeight: FontWeight.w500,
               fontSize: 15,
               letterSpacing: 0.2,
-              color: _C.ink.withOpacity(0.62),
+              color: _C.ink.withValues(alpha: 0.62),
             ),
           ),
         ),
@@ -307,7 +307,7 @@ class _LogoPainter extends CustomPainter {
       canvas.translate(center.dx, center.dy);
       canvas.scale(scale);
       canvas.translate(-center.dx, -center.dy);
-      canvas.drawPath(parseSvgPathData(d), Paint()..color = color.withOpacity(opacity.clamp(0.0, 1.0)));
+      canvas.drawPath(parseSvgPathData(d), Paint()..color = color.withValues(alpha: opacity.clamp(0.0, 1.0)));
       canvas.restore();
     }
 
@@ -327,16 +327,6 @@ class _PathPainter extends CustomPainter {
 
   factory _PathPainter.fill(String d, Color color, {Size viewBoxSize = const Size(24, 24)}) =>
       _PathPainter(parseSvgPathData(d), Paint()..color = color, viewBoxSize);
-
-  factory _PathPainter.stroke(String d, Color color, {double strokeWidth = 1.6}) => _PathPainter(
-        parseSvgPathData(d),
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = strokeWidth
-          ..strokeCap = StrokeCap.round,
-        const Size(24, 24),
-      );
 
   final Path path;
   final Paint fillPaint;

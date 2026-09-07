@@ -62,7 +62,7 @@ class _BookSearchResultsScreenState extends ConsumerState<BookSearchResultsScree
                 }
                 return ListView.separated(
                   itemCount: results.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+                  separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
                   itemBuilder: (context, i) {
                     final book = results[i];
                     return BookCard(
