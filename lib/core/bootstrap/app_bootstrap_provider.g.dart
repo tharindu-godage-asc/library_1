@@ -28,7 +28,7 @@ final class AppBootstrapProvider
         argument: null,
         retry: null,
         name: r'appBootstrapProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,4 +48,4 @@ final class AppBootstrapProvider
   }
 }
 
-String _$appBootstrapHash() => r'84de7276c62b70e76790158c232ba333711d8dba';
+String _$appBootstrapHash() => r'c4e3a876b9d12d050798838a9d905b1efc633031';

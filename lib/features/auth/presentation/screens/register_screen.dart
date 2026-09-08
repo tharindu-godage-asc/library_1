@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -69,17 +70,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
-    // RegisterScreen is pushed on top of LoginScreen, which is itself the
-    // root content AuthGate swaps reactively. AuthGate alone can't reveal
-    // BooksScreen while this route is still on top of it — so on success
-    // this pops back to root, and the already-swapped AuthGate is what the
-    // user sees. It never navigates *to* a screen, only *away* from itself.
-    ref.listen(authControllerProvider, (previous, next) {
-      if (next.asData?.value != null && Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-    });
-
     return AppGradientScaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -144,7 +134,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             const SizedBox(height: AppSpacing.lg),
             Center(
               child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () => context.pop(),
                 child: RichText(
                   text: TextSpan(
                     style: AppTextStyles.bodyMd,

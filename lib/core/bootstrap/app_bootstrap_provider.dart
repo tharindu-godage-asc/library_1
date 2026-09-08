@@ -5,7 +5,12 @@ part 'app_bootstrap_provider.g.dart';
 
 enum BootstrapDestination { onboarding, login, home }
 
-@riverpod
+// keepAlive: this is a run-once-and-cache-forever decision, same category
+// as AuthController. It must never recompute after cold start — see the
+// `ref.read`, not `ref.watch`, comment below — so it can't be left to
+// autoDispose based on incidental subscribers (e.g. the router's
+// ref.listen); it needs to be alive on its own terms.
+@Riverpod(keepAlive: true)
 Future<BootstrapDestination> appBootstrap(Ref ref) async {
   // Preserves the splash screen's original 2.4s brand-timing hold, now
   // driven by real state instead of a bare timer + callback.
@@ -22,11 +27,9 @@ Future<BootstrapDestination> appBootstrap(Ref ref) async {
     // once, at true cold start — if it watched authControllerProvider,
     // every later login/logout would re-trigger this whole function,
     // including the 2.4s minimum-hold delay, flashing the splash back up
-    // mid-session. Runtime sign-in/out transitions are handled by
-    // explicit navigation at the screen level instead (LoginScreen's
-    // ref.listen; the logout button below). The root only owns the
-    // COLD-START decision reactively — full state-driven navigation for
-    // every transition is still go_router's job, in Phase 14.
+    // mid-session. Runtime sign-in/out transitions are handled entirely by
+    // AppRouter's redirect once this cold-start decision is made; this
+    // destination is never consulted again after the app leaves /splash.
     final session = await ref.read(authControllerProvider.future);
     destination = session != null ? BootstrapDestination.home : BootstrapDestination.login;
   }

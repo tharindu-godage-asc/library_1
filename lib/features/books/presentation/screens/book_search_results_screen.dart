@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_search_field.dart';
@@ -7,7 +8,6 @@ import '../../../../core/widgets/app_state_views.dart';
 import '../../domain/entities/book.dart';
 import '../providers/book_providers.dart';
 import '../widgets/book_card.dart';
-import 'book_details_screen.dart';
 
 /// No longer takes the book list as a constructor param. It watches
 /// bookListProvider directly — since it caches its result, this
@@ -67,9 +67,7 @@ class _BookSearchResultsScreenState extends ConsumerState<BookSearchResultsScree
                     final book = results[i];
                     return BookCard(
                       book: book,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => BookDetailsScreen(bookId: book.id)),
-                      ),
+                      onTap: () => context.push('/home/book/${book.id}'),
                     );
                   },
                 );

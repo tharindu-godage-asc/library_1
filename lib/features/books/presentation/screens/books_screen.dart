@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -12,8 +13,6 @@ import '../providers/book_providers.dart';
 import '../widgets/book_card.dart';
 import '../widgets/book_vertical_card.dart';
 import '../widgets/reminder_banner.dart';
-import 'book_details_screen.dart';
-import 'book_search_results_screen.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 
 class BooksScreen extends ConsumerStatefulWidget {
@@ -45,13 +44,11 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
   }
 
   void _openBook(String id) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => BookDetailsScreen(bookId: id)));
+    context.push('/home/book/$id');
   }
 
   void _openSearchResults() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => BookSearchResultsScreen(initialQuery: _query),
-    ));
+    context.push(Uri(path: '/home/search', queryParameters: {'q': _query}).toString());
   }
 
   void _todo(String feature) {
