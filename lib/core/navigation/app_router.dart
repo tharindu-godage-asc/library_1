@@ -8,6 +8,8 @@ import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/books/presentation/screens/book_details_screen.dart';
 import '../../features/books/presentation/screens/book_search_results_screen.dart';
 import '../../features/books/presentation/screens/books_screen.dart';
+import '../../features/borrowings/presentation/screens/borrowing_details_screen.dart';
+import '../../features/borrowings/presentation/screens/my_borrowings_screen.dart';
 import '../bootstrap/app_bootstrap_provider.dart';
 import '../../features/auth/presentation/providers/auth_providers.dart';
 
@@ -89,6 +91,14 @@ GoRouter router(Ref ref) {
           GoRoute(
             path: 'search',
             builder: (_, state) => BookSearchResultsScreen(initialQuery: state.uri.queryParameters['q'] ?? ''),
+          ),
+          GoRoute(path: 'borrowings', builder: (_, _) => const MyBorrowingsScreen()),
+          GoRoute(
+            path: 'borrowings/:id',
+            builder: (_, state) => BorrowingDetailsScreen(
+              borrowingId: state.pathParameters['id']!,
+              justBorrowed: state.uri.queryParameters['justBorrowed'] == 'true',
+            ),
           ),
         ],
       ),

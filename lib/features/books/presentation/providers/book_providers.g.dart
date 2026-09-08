@@ -26,7 +26,7 @@ final class BookLocalDataSourceProvider
         argument: null,
         retry: null,
         name: r'bookLocalDataSourceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -55,7 +55,7 @@ final class BookLocalDataSourceProvider
 }
 
 String _$bookLocalDataSourceHash() =>
-    r'dd3c20b9a9012e4b388962f1918112d77adaba7b';
+    r'f74fd096ca454259a1fcf9182ad5a70f158aa918';
 
 @ProviderFor(bookRepository)
 final bookRepositoryProvider = BookRepositoryProvider._();
@@ -69,7 +69,7 @@ final class BookRepositoryProvider
         argument: null,
         retry: null,
         name: r'bookRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -96,7 +96,7 @@ final class BookRepositoryProvider
   }
 }
 
-String _$bookRepositoryHash() => r'e8ab2fc6c704ebad56aaae5ce45e927d51733f29';
+String _$bookRepositoryHash() => r'209405d05032ca177e7644a99783093ea8ba685f';
 
 @ProviderFor(getBooksUseCase)
 final getBooksUseCaseProvider = GetBooksUseCaseProvider._();

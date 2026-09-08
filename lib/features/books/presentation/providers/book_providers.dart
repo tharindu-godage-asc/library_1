@@ -8,10 +8,10 @@ import '../../domain/usecases/get_books.dart';
 
 part 'book_providers.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 BookLocalDataSource bookLocalDataSource(Ref ref) => BookLocalDataSourceImpl();
 
-@riverpod
+@Riverpod(keepAlive: true)
 BookRepository bookRepository(Ref ref) =>
     BookRepositoryImpl(ref.read(bookLocalDataSourceProvider));
 

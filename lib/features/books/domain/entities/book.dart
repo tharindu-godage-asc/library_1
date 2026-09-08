@@ -56,4 +56,20 @@ class Book {
       description: description ?? this.description,
     );
   }
+
+    /// Business rule from the spec: "Borrowing a book should reduce
+  /// AvailableCopies by 1." This is where `copyWith` finally earns its
+  /// keep from Phase 2 — the entity produces a new, valid Book rather
+  /// than anyone mutating availableCopies directly from outside.
+  Book borrowCopy() {
+    assert(isAvailable, 'borrowCopy() called on an unavailable book — check isAvailable first.');
+    return copyWith(availableCopies: availableCopies - 1);
+  }
+
+  /// "Returning a book should increase AvailableCopies by 1."
+  Book returnCopy() {
+    final next = availableCopies + 1;
+    assert(next <= totalCopies, 'returnCopy() would exceed totalCopies — data is inconsistent.');
+    return copyWith(availableCopies: next > totalCopies ? totalCopies : next);
+  }
 }

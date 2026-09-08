@@ -9,4 +9,9 @@ import '../entities/book.dart';
 abstract class BookRepository {
   Future<Either<Failure, List<Book>>> getBooks();
   Future<Either<Failure, Book>> getBookById(String id);
+
+  /// Persists a Book that already changed via its own domain method
+  /// (borrowCopy()/returnCopy()) — the repository's job is storage, not
+  /// deciding how the numbers should change.
+  Future<Either<Failure, Unit>> updateBook(Book book);
 }

@@ -14,6 +14,8 @@ import '../widgets/book_card.dart';
 import '../widgets/book_vertical_card.dart';
 import '../widgets/reminder_banner.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../borrowings/domain/entities/borrowing.dart';
+import '../../../borrowings/presentation/providers/borrowing_providers.dart';
 
 class BooksScreen extends ConsumerStatefulWidget {
   const BooksScreen({super.key});
@@ -71,7 +73,8 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
         ],
         currentIndex: 1,
         onTap: (i) {
-          if (i != 1) _todo(['Borrowings', 'Books', 'Profile'][i]);
+          if (i == 0) context.go('/home/borrowings');
+          if (i == 2) _todo('Profile');
         },
       ),
       body: asyncBooks.when(
@@ -80,15 +83,25 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
           message: 'Could not load books. Please try again.',
           onRetry: () => ref.invalidate(bookListProvider),
         ),
-        data: _buildContent,
+        data: (books) {
+          final asyncBorrowings = ref.watch(myBorrowingsProvider);
+          // Fails soft: Books doesn't block on borrowings loading — the
+          // Reminder banner just doesn't show yet/at all if this is slow
+          // or errors. A deliberate simplification, not a general pattern
+          // for every cross-feature dependency.
+          return asyncBorrowings.when(
+            loading: () => _buildContent(books, const []),
+            error: (_, _) => _buildContent(books, const []),
+            data: (borrowings) => _buildContent(books, borrowings),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildContent(List<Book> books) {
+  Widget _buildContent(List<Book> books, List<Borrowing> myBorrowings) {
     final matches = _searchMatches(books);
-    final borrowedPreview = _borrowedPreview(books);
-    final soonestDue = _soonestDue(borrowedPreview);
+    final soonestDue = _soonestDueReminder(myBorrowings, books);
     final recommended = books.reversed.take(10).toList();
     final newestPicks = _newestPicks(books);
 
@@ -166,7 +179,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
             if (soonestDue != null) ...[
               const SizedBox(height: AppSpacing.lg),
               ReminderBanner(
-                bookTitle: soonestDue.book.title,
+                bookTitle: soonestDue.bookTitle,
                 dueInDays: soonestDue.dueInDays,
                 onRenew: () => _todo('Renew'),
               ),
@@ -203,16 +216,21 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
     );
   }
 
-  // ---- TEMPORARY mock content (same as before, untouched) ----------------
-  List<_BorrowedPreview> _borrowedPreview(List<Book> books) {
-    if (books.length < 3) return [];
-    const dueDays = [2, 2, 1];
-    return List.generate(3, (i) => _BorrowedPreview(book: books[i], dueInDays: dueDays[i]));
+  _DueSoon? _soonestDueReminder(List<Borrowing> borrowings, List<Book> books) {
+    final candidates = borrowings.where((b) => b.status == BorrowingStatus.borrowed);
+    if (candidates.isEmpty) return null;
+    final soonest = candidates.reduce((a, b) => a.dueDate.isBefore(b.dueDate) ? a : b);
+    final daysLeft = soonest.dueDate.difference(DateTime.now()).inDays;
+    if (daysLeft > 3) return null; // only surface the reminder when it's actually close
+    final book = _findBook(books, soonest.bookId);
+    return _DueSoon(bookTitle: book?.title ?? 'A book', dueInDays: daysLeft);
   }
 
-  _BorrowedPreview? _soonestDue(List<_BorrowedPreview> preview) {
-    if (preview.isEmpty) return null;
-    return preview.reduce((a, b) => a.dueInDays <= b.dueInDays ? a : b);
+  Book? _findBook(List<Book> books, String id) {
+    for (final b in books) {
+      if (b.id == id) return b;
+    }
+    return null;
   }
 
   List<Book> _newestPicks(List<Book> books) {
@@ -221,9 +239,9 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
   }
 }
 
-class _BorrowedPreview {
-  const _BorrowedPreview({required this.book, required this.dueInDays});
-  final Book book;
+class _DueSoon {
+  const _DueSoon({required this.bookTitle, required this.dueInDays});
+  final String bookTitle;
   final int dueInDays;
 }
 

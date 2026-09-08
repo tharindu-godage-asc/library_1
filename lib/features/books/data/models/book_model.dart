@@ -59,4 +59,10 @@ class BookModel {
         availableCopies: availableCopies,
         description: description,
       );
+
+    factory BookModel.fromEntity(Book book) => BookModel(
+        id: book.id, title: book.title, author: book.author, isbn: book.isbn,
+        publishedYear: book.publishedYear, totalCopies: book.totalCopies,
+        availableCopies: book.availableCopies, description: book.description,
+      );
 }
