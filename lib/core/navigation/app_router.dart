@@ -95,10 +95,7 @@ GoRouter router(Ref ref) {
           GoRoute(path: 'borrowings', builder: (_, _) => const MyBorrowingsScreen()),
           GoRoute(
             path: 'borrowings/:id',
-            builder: (_, state) => BorrowingDetailsScreen(
-              borrowingId: state.pathParameters['id']!,
-              justBorrowed: state.uri.queryParameters['justBorrowed'] == 'true',
-            ),
+            builder: (_, state) => BorrowingDetailsScreen(borrowingId: state.pathParameters['id']!),
           ),
         ],
       ),

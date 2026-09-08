@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
@@ -16,11 +15,11 @@ import '../../domain/entities/borrowing.dart';
 import '../providers/borrowing_providers.dart';
 import '../../../../core/utils/date_formatting.dart';
 import '../../../../core/widgets/app_confirm_sheet.dart';
+import '../../../../core/widgets/book_action_success_snackbar.dart';
 
 class BorrowingDetailsScreen extends ConsumerWidget {
-  const BorrowingDetailsScreen({super.key, required this.borrowingId, this.justBorrowed = false});
+  const BorrowingDetailsScreen({super.key, required this.borrowingId});
   final String borrowingId;
-  final bool justBorrowed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +27,7 @@ class BorrowingDetailsScreen extends ConsumerWidget {
     final returnState = ref.watch(returnActionControllerProvider);
 
     return AppGradientScaffold(
-      appBar: AppBar(title: Text(justBorrowed ? '' : 'Borrowing Details')),
+      appBar: AppBar(title: const Text('Borrowing Details')),
       body: asyncBorrowing.when(
         loading: () => const LoadingView(),
         error: (e, _) => ErrorView(
@@ -40,7 +39,32 @@ class BorrowingDetailsScreen extends ConsumerWidget {
           return asyncBook.when(
             loading: () => const LoadingView(),
             error: (e, _) => const EmptyView(message: 'Could not load book details.'),
-            data: (book) => _buildContent(context, ref, borrowing, book, returnState),
+            data: (book) {
+              ref.listen(returnActionControllerProvider, (previous, next) {
+                if (next.value != null && next.value!.id == borrowingId && !next.isLoading) {
+                  final returnedBorrowing = next.value!;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: BookActionSuccessSnackBar(
+                        title: book.title,
+                        heading: 'Book Returned!',
+                        message: 'Thanks for returning ${book.title}.\nIt\'s back on the shelf for the next reader.',
+                        dateLabel: returnedBorrowing.returnedDate == null
+                            ? 'Returned today'
+                            : formatReturnedLabel(returnedBorrowing.returnedDate!),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      padding: EdgeInsets.zero,
+                      behavior: SnackBarBehavior.floating,
+                      margin: const EdgeInsets.fromLTRB(11, 0, 11, 0),
+                      duration: const Duration(seconds: 6),
+                    ),
+                  );
+                }
+              });
+              return _buildContent(context, ref, borrowing, book, returnState);
+            },
           );
         },
       ),
@@ -54,7 +78,6 @@ class BorrowingDetailsScreen extends ConsumerWidget {
     Book book,
     AsyncValue<Borrowing?> returnState,
   ) {
-    final justReturned = returnState.value?.id == borrowing.id && borrowing.status == BorrowingStatus.returned;
     final badgeStatus = switch (borrowing.status) {
       BorrowingStatus.borrowed => BadgeStatus.borrowed,
       BorrowingStatus.returned => BadgeStatus.returned,
@@ -66,20 +89,6 @@ class BorrowingDetailsScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            if (justBorrowed || justReturned) ...[
-              Icon(Icons.check_circle, color: AppColors.success, size: 72),
-              const SizedBox(height: AppSpacing.md),
-              Text(justBorrowed ? 'Book Borrowed!' : 'Book Returned!', style: AppTextStyles.headingLg),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                justBorrowed
-                    ? '${book.title} is now yours. Bring it back by the due date below.'
-                    : 'Thanks for returning ${book.title} on time.',
-                style: AppTextStyles.bodyMd,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -95,7 +104,12 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(book.title, style: AppTextStyles.bodyLg),
-                          Text('Due ${borrowing.dueDate.day}/${borrowing.dueDate.month}', style: AppTextStyles.caption),
+                          Text(
+                            borrowing.status == BorrowingStatus.returned
+                                ? formatReturnedLabel(borrowing.returnedDate!)
+                                : 'Due ${formatShortDate(borrowing.dueDate)}',
+                            style: AppTextStyles.caption,
+                          ),
                         ],
                       ),
                     ),
@@ -105,9 +119,7 @@ class BorrowingDetailsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            if (justBorrowed)
-              AppButton(label: 'Back to Books', onPressed: () => context.go('/home'))
-            else if (borrowing.status != BorrowingStatus.returned) ...[
+            if (borrowing.status != BorrowingStatus.returned) ...[
               if (returnState.hasError)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -117,23 +129,24 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                 label: 'Return this book',
                 isLoading: returnState.isLoading,
                 onPressed: returnState.isLoading ? null : () => _confirmAndReturn(context, ref, borrowing),
-),
+              ),
             ],
           ],
         ),
       ),
     );
   }
-}
-Future<void> _confirmAndReturn(BuildContext context, WidgetRef ref, Borrowing borrowing) async {
-  final confirmed = await AppConfirmSheet.show(
-    context,
-    title: 'Return This Book?',
-    message: "You're about to mark this book as returned. This can't be undone.",
-    confirmLabel: 'Return book',
-  );
-  if (confirmed == true) {
-    ref.read(returnActionControllerProvider.notifier).returnBook(borrowing.id, borrowing.bookId);
+
+  Future<void> _confirmAndReturn(BuildContext context, WidgetRef ref, Borrowing borrowing) async {
+    final confirmed = await AppConfirmSheet.show(
+      context,
+      title: 'Return This Book?',
+      message: "You're about to mark this book as returned. This can't be undone.",
+      confirmLabel: 'Return book',
+    );
+    if (confirmed == true) {
+      ref.read(returnActionControllerProvider.notifier).returnBook(borrowing.id, borrowing.bookId);
+    }
   }
 }
 

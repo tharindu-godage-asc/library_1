@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../../../core/error/failure.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
@@ -11,6 +11,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_confirm_sheet.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_state_views.dart';
+import '../../../../core/widgets/book_action_success_snackbar.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../../auth/domain/entities/auth_session.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
@@ -31,12 +32,28 @@ class BookDetailsScreen extends ConsumerWidget {
     ref.listen(borrowActionControllerProvider, (previous, next) {
       final borrowing = next.value;
       if (borrowing != null) {
-        context.go('/home/borrowings/${borrowing.id}?justBorrowed=true');
+        final title = asyncBook.asData?.value.title ?? 'The book';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: BookActionSuccessSnackBar(
+              title: title,
+              heading: 'Book Borrowed!',
+              message:
+                  '$title is now yours. Bring it back by the\ndue date below.',
+              dateLabel: 'Due ${formatShortDate(borrowing.dueDate)}',
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            padding: EdgeInsets.zero,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.fromLTRB(11, 0, 11, 0),
+            duration: const Duration(seconds: 6),
+          ),
+        );
       }
       if (next.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_messageFor(next.error))),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(_messageFor(next.error))));
       }
     });
 
@@ -48,7 +65,8 @@ class BookDetailsScreen extends ConsumerWidget {
           message: 'Could not load this book.',
           onRetry: () => ref.invalidate(bookByIdProvider(bookId)),
         ),
-        data: (book) => _buildContent(context, ref, book, actionState.isLoading, session),
+        data: (book) =>
+            _buildContent(context, ref, book, actionState.isLoading, session),
       ),
     );
   }
@@ -66,17 +84,35 @@ class BookDetailsScreen extends ConsumerWidget {
           Container(
             width: 140,
             height: 190,
-            decoration: BoxDecoration(color: AppColors.surfaceAlt, borderRadius: BorderRadius.circular(AppRadius.md)),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceAlt,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text(book.title, style: AppTextStyles.headingMd, textAlign: TextAlign.center),
+          Text(
+            book.title,
+            style: AppTextStyles.headingMd,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: AppSpacing.xs),
-          Text('${book.author} · ${book.publishedYear}', style: AppTextStyles.caption),
+          Text(
+            '${book.author} · ${book.publishedYear}',
+            style: AppTextStyles.caption,
+          ),
           const SizedBox(height: AppSpacing.md),
-          StatusBadge(status: book.isAvailable ? BadgeStatus.available : BadgeStatus.overdue),
+          StatusBadge(
+            status: book.isAvailable
+                ? BadgeStatus.available
+                : BadgeStatus.overdue,
+          ),
           if (book.description != null) ...[
             const SizedBox(height: AppSpacing.lg),
-            Text(book.description!, style: AppTextStyles.bodyMd, textAlign: TextAlign.center),
+            Text(
+              book.description!,
+              style: AppTextStyles.bodyMd,
+              textAlign: TextAlign.center,
+            ),
           ],
           const SizedBox(height: AppSpacing.xl),
           AppButton(
@@ -102,13 +138,18 @@ class BookDetailsScreen extends ConsumerWidget {
     final confirmed = await AppConfirmSheet.show(
       context,
       title: 'Borrow This Book?',
-      message: "You'll have 14 days to finish ${book.title} before it's due back on ${formatShortDate(dueDate)}",
+      message:
+          "You'll have 14 days to finish ${book.title} before it's due back on ${formatShortDate(dueDate)}",
       confirmLabel: 'Borrow book',
     );
     if (confirmed == true) {
-      ref.read(borrowActionControllerProvider.notifier).borrow(bookId: book.id, memberId: session.userId);
+      ref
+          .read(borrowActionControllerProvider.notifier)
+          .borrow(bookId: book.id, memberId: session.userId);
     }
   }
 }
 
-String _messageFor(Object? error) => error is Failure ? error.message : 'Something went wrong. Please try again.';
+String _messageFor(Object? error) => error is Failure
+    ? error.message
+    : 'Something went wrong. Please try again.';

@@ -5,15 +5,15 @@ import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';
 import 'app_button.dart';
 
-/// A thin wrapper around Material's showModalBottomSheet — that's the
-/// actual "MUI" component giving the dimmed scrim, swipe-to-dismiss, and
-/// rounded-top-corner sheet, not something built from primitives.
+/// A thin wrapper around Material's showDialog — that's the actual "MUI"
+/// component giving the dimmed scrim and centered, all-corners-rounded
+/// card, not something built from primitives.
 ///
 /// Shaped as a static function rather than a widget class, unlike every
 /// other core/widgets file so far — that's deliberate, not inconsistent:
-/// showDialog/showModalBottomSheet are themselves imperative "ask and
-/// await an answer" functions, not things you place in a widget tree, so
-/// this follows that same shape rather than fighting it.
+/// showDialog is itself an imperative "ask and await an answer" function,
+/// not something you place in a widget tree, so this follows that same
+/// shape rather than fighting it.
 class AppConfirmSheet {
   const AppConfirmSheet._(); // not meant to be instantiated
 
@@ -24,13 +24,11 @@ class AppConfirmSheet {
     required String confirmLabel,
     String cancelLabel = 'Cancel',
   }) {
-    return showModalBottomSheet<bool>(
+    return showDialog<bool>(
       context: context,
-      backgroundColor: AppColors.backgroundTop,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-      ),
-      builder: (sheetContext) => SafeArea(
+      builder: (dialogContext) => Dialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -40,7 +38,7 @@ class AppConfirmSheet {
                 alignment: Alignment.centerRight,
                 child: IconButton(
                   icon: const Icon(Icons.close, color: AppColors.textPrimary),
-                  onPressed: () => Navigator.of(sheetContext).pop(false),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
                 ),
               ),
               Text(title, style: AppTextStyles.headingMd, textAlign: TextAlign.center),
@@ -57,14 +55,14 @@ class AppConfirmSheet {
                     child: AppButton(
                       label: cancelLabel,
                       variant: AppButtonVariant.secondary,
-                      onPressed: () => Navigator.of(sheetContext).pop(false),
+                      onPressed: () => Navigator.of(dialogContext).pop(false),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: AppButton(
                       label: confirmLabel,
-                      onPressed: () => Navigator.of(sheetContext).pop(true),
+                      onPressed: () => Navigator.of(dialogContext).pop(true),
                     ),
                   ),
                 ],
