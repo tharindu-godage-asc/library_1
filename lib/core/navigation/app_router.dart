@@ -31,6 +31,20 @@ class _RouterRefreshNotifier extends ChangeNotifier {
 /// and the Main Stack (`/home`, ...). Replaces the old AuthGate widget —
 /// no screen navigates to Home or back to Login on its own anymore;
 /// changing auth state is enough, and this is the only place that reacts.
+///
+/// Navigation rule for screens under the Main Stack:
+///  - Switching bottom-nav tabs -> `navigationShell.goBranch(i)` (only
+///    HomeShell does this). Never `context.go('/home/...')` for a tab
+///    switch — that's what tore down each tab's state before this file
+///    grew a `StatefulShellRoute`.
+///  - Drilling into more content (a book, a borrowing, search results,
+///    notifications) -> `context.push(...)`, so back returns you to
+///    where you were.
+///  - Deliberately resetting a tab back to its root from an error/empty
+///    state (e.g. "Browse Books" after an empty Borrowings list, or from
+///    [NotFoundRouteScreen]) -> `context.go('/home')` is correct here,
+///    not a bug — the intent is "start fresh at Books' root", not
+///    "preserve wherever Books was last left".
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   final refresh = _RouterRefreshNotifier();
