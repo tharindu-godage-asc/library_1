@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/error/widgets/error_state_view.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_state_views.dart';
+import '../../../../core/widgets/illustrated_state_view.dart';
 import '../providers/notification_providers.dart';
 
 class NotificationsScreen extends ConsumerWidget {
@@ -19,13 +21,17 @@ class NotificationsScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Notifications')),
       body: asyncItems.when(
         loading: () => const LoadingView(),
-        error: (e, _) => ErrorView(
-          message: 'Could not load notifications.',
+        error: (e, _) => ErrorStateView(
+          error: e,
           onRetry: () => ref.invalidate(notificationItemsProvider),
         ),
         data: (items) {
           if (items.isEmpty) {
-            return const EmptyView(message: "You're all caught up — no notifications right now.");
+            return const IllustratedStateView(
+              illustrationAsset: 'assets/illustrations/illustration-no-notifications.png',
+              heading: "You're All Caught Up",
+              message: 'New alerts about due dates and returns will show up here.',
+            );
           }
           final urgent = items.where((i) => i.tone != NotificationTone.info).toList();
           final recent = items.where((i) => i.tone == NotificationTone.info).toList();

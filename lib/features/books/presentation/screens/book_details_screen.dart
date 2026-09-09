@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/error/failure.dart';
+import '../../../../core/error/widgets/error_state_view.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -61,8 +62,8 @@ class BookDetailsScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('')),
       body: asyncBook.when(
         loading: () => const LoadingView(),
-        error: (err, stack) => ErrorView(
-          message: 'Could not load this book.',
+        error: (err, stack) => ErrorStateView(
+          error: err,
           onRetry: () => ref.invalidate(bookByIdProvider(bookId)),
         ),
         data: (book) =>

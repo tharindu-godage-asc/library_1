@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/error/widgets/error_state_view.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -36,12 +37,13 @@ class ProfileScreen extends ConsumerWidget {
       ),
       body: asyncProfile.when(
         loading: () => const LoadingView(),
-        error: (e, _) => ErrorView(
-          message: 'Could not load your profile.',
+        error: (e, _) => ErrorStateView(
+          error: e,
           onRetry: () => ref.invalidate(myProfileProvider),
         ),
-        data: (member) =>
-            member == null ? const EmptyView(message: 'Not signed in.') : _ProfileBody(member: member),
+        data: (member) => member == null
+            ? const Center(child: Text('Not signed in.', style: AppTextStyles.bodyMd))
+            : _ProfileBody(member: member),
       ),
     );
   }

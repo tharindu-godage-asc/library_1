@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/error/widgets/error_state_view.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -8,6 +9,7 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_state_views.dart';
+import '../../../../core/widgets/illustrated_state_view.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../../books/domain/entities/book.dart';
 import '../../../books/presentation/providers/book_providers.dart';
@@ -39,17 +41,25 @@ class MyBorrowingsScreen extends ConsumerWidget {
       ),
       body: asyncBorrowings.when(
         loading: () => const LoadingView(),
-        error: (e, _) => ErrorView(
-          message: 'Could not load your borrowings.',
+        error: (e, _) => ErrorStateView(
+          error: e,
           onRetry: () => ref.invalidate(myBorrowingsProvider),
         ),
         data: (borrowings) {
           if (borrowings.isEmpty) {
-            return const EmptyView(message: "You haven't borrowed any books yet.");
+            return IllustratedStateView(
+              illustrationAsset: 'assets/illustrations/illustration-no-borrowings.png',
+              heading: 'No Borrowings Yet',
+              message: 'Books you borrow will show up here. Find something good and bring it home.',
+              primaryLabel: 'Browse Books',
+              onPrimary: () => context.go('/home'),
+            );
           }
           return asyncBooks.when(
             loading: () => const LoadingView(),
-            error: (e, _) => const EmptyView(message: 'Could not load book details.'),
+            error: (e, _) => const Center(
+              child: Text('Could not load book details.', style: AppTextStyles.bodyMd),
+            ),
             data: (books) {
               final sorted = [...borrowings]..sort((a, b) => b.borrowedDate.compareTo(a.borrowedDate));
               return ListView.separated(

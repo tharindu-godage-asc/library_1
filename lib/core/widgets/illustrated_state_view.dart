@@ -48,7 +48,7 @@ class IllustratedStateView extends StatelessWidget {
             ),
             if (primaryLabel != null) ...[
               const SizedBox(height: AppSpacing.xl),
-              AppButton(label: primaryLabel!, onPressed: onPrimary, expand: false),
+              AppButton(label: primaryLabel!, onPressed: onPrimary),
             ],
             if (secondaryLabel != null) ...[
               const SizedBox(height: AppSpacing.xs),

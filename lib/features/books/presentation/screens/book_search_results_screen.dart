@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/error/widgets/error_state_view.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_search_field.dart';
 import '../../../../core/widgets/app_state_views.dart';
+import '../../../../core/widgets/illustrated_state_view.dart';
 import '../../domain/entities/book.dart';
 import '../providers/book_providers.dart';
 import '../widgets/book_card.dart';
@@ -51,14 +53,25 @@ class _BookSearchResultsScreenState extends ConsumerState<BookSearchResultsScree
           Expanded(
             child: asyncBooks.when(
               loading: () => const LoadingView(),
-              error: (err, stack) => ErrorView(
-                message: 'Could not load books.',
+              error: (err, stack) => ErrorStateView(
+                error: err,
                 onRetry: () => ref.invalidate(bookListProvider),
               ),
               data: (allBooks) {
                 final results = _results(allBooks);
                 if (results.isEmpty) {
-                  return const EmptyView(message: 'No books match your search.');
+                  return IllustratedStateView(
+                    illustrationAsset: 'assets/illustrations/illustration-no-results.png',
+                    heading: 'No Books Found',
+                    message: _query.trim().isEmpty
+                        ? "We couldn't find anything. Try a different title, author, or genre."
+                        : 'We couldn\'t find anything for "${_query.trim()}". Try a different title, author, or genre.',
+                    primaryLabel: 'Clear Search',
+                    onPrimary: () => setState(() {
+                      _controller.clear();
+                      _query = '';
+                    }),
+                  );
                 }
                 return ListView.separated(
                   itemCount: results.length,

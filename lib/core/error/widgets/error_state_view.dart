@@ -21,7 +21,7 @@ class ErrorStateView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final connectivity = ref.watch(connectivityStatusProvider).valueOrNull;
+    final connectivity = ref.watch(connectivityStatusProvider).value;
 
     if (connectivity == AppConnectivityStatus.offline) {
       return IllustratedStateView(
