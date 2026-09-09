@@ -12,6 +12,8 @@ import '../../domain/usecases/register_member.dart';
 import '../../domain/usecases/restore_session.dart';
 part 'auth_providers.g.dart';
 
+
+// Data Infrastructure Layer
 @riverpod
 AuthLocalDataSource authLocalDataSource(Ref ref) => AuthLocalDataSourceImpl();
 
@@ -21,12 +23,16 @@ SecureSessionStorage secureSessionStorage(Ref ref) => const SecureSessionStorage
 @riverpod
 OnboardingPreference onboardingPreference(Ref ref) => OnboardingPreference();
 
+
+// Repository Layer
 @riverpod
 AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
   ref.read(authLocalDataSourceProvider),
   ref.read(secureSessionStorageProvider),
 );
 
+
+// Business Layer
 @riverpod
 LoginUser loginUserUseCase(Ref ref) => LoginUser(ref.read(authRepositoryProvider));
 
@@ -39,14 +45,6 @@ RestoreSession restoreSessionUseCase(Ref ref) => RestoreSession(ref.read(authRep
 @riverpod
 LogoutUser logoutUserUseCase(Ref ref) => LogoutUser(ref.read(authRepositoryProvider));
 
-
-/// Holds the current session as an `AsyncValue<AuthSession?>`:
-///  - AsyncData(null)   -> signed out (the only state possible right now —
-///                          there's no persistence yet, so every cold
-///                          start begins here; that's next slice's job)
-///  - AsyncLoading()    -> a login/register call is in flight
-///  - AsyncData(session)-> signed in
-///  - AsyncError(...)   -> the last attempt failed; session is still null
 @Riverpod(keepAlive: true)
 class AuthController extends _$AuthController {
   @override
