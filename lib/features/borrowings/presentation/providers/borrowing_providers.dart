@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../books/presentation/providers/book_providers.dart';
+import '../../../members/presentation/providers/member_providers.dart';
 import '../../data/datasources/borrowing_local_datasource.dart';
 import '../../data/repositories/borrowing_repository_impl.dart';
 import '../../domain/entities/borrowing.dart';
@@ -18,8 +19,12 @@ BorrowingRepository borrowingRepository(Ref ref) =>
     BorrowingRepositoryImpl(ref.read(borrowingLocalDataSourceProvider));
 
 @riverpod
-BorrowBook borrowBookUseCase(Ref ref) =>
-    BorrowBook(ref.read(bookRepositoryProvider), ref.read(borrowingRepositoryProvider));
+BorrowBook borrowBookUseCase(Ref ref) => BorrowBook(
+      ref.read(bookRepositoryProvider),
+      ref.read(borrowingRepositoryProvider),
+      ref.read(memberRepositoryProvider),
+    );
+
 
 @riverpod
 ReturnBorrowing returnBorrowingUseCase(Ref ref) =>

@@ -144,7 +144,7 @@ final class BorrowBookUseCaseProvider
   }
 }
 
-String _$borrowBookUseCaseHash() => r'6c55e1eefdd828effcd5c53d536979750f9f9f0a';
+String _$borrowBookUseCaseHash() => r'71c528935127ec8ee7022ecbe40bf5683b4b4b02';
 
 @ProviderFor(returnBorrowingUseCase)
 final returnBorrowingUseCaseProvider = ReturnBorrowingUseCaseProvider._();
@@ -240,7 +240,7 @@ final class MyBorrowingsProvider
   }
 }
 
-String _$myBorrowingsHash() => r'7845832e57ec6620049487970dd3668ac2c1c6a3';
+String _$myBorrowingsHash() => r'0584805f94866c09a416da4f5077671dcbb52e12';
 
 @ProviderFor(borrowingById)
 final borrowingByIdProvider = BorrowingByIdFamily._();

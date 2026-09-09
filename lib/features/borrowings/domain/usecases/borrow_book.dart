@@ -2,34 +2,29 @@ import 'package:fpdart/fpdart.dart';
 import '../../../../core/error/failure.dart';
 import '../../../books/domain/entities/book.dart';
 import '../../../books/domain/repositories/book_repository.dart';
+import '../../../members/domain/entities/member.dart';
+import '../../../members/domain/repositories/member_repository.dart';
 import '../entities/borrowing.dart';
 import '../repositories/borrowing_repository.dart';
 
-/// Depends on BOTH repositories deliberately — this is what a use case is
-/// for. BookRepository stays focused on persisting Books; BorrowingRepository
-/// stays focused on persisting Borrowings; this class is the one place
-/// allowed to know that "borrowing a book" touches both.
-///
-/// Note on style: each step below unwraps its Either with `.match()` into
-/// a mutable local rather than chaining functionally (fpdart's TaskEither
-/// would remove the repetition here) — deliberately not introducing a
-/// second functional-programming concept mid-feature. Worth revisiting in
-/// the Refactoring phase once there are more use cases like this one.
 class BorrowBook {
-  const BorrowBook(this._bookRepository, this._borrowingRepository);
+  const BorrowBook(this._bookRepository, this._borrowingRepository, this._memberRepository);
   final BookRepository _bookRepository;
   final BorrowingRepository _borrowingRepository;
+  final MemberRepository _memberRepository;
 
   Future<Either<Failure, Borrowing>> call({
     required String bookId,
     required String memberId,
   }) async {
-    // TODO(members): also enforce "member must be active" here once the
-    // Members feature exists — AuthSession has no isActive field yet, so
-    // this rule from the API reference is intentionally NOT enforced
-    // rather than faked.
-
     Failure? earlyFailure;
+
+    Member? member;
+    (await _memberRepository.getMemberById(memberId)).match((f) => earlyFailure = f, (m) => member = m);
+    if (earlyFailure != null) return Left(earlyFailure!);
+    if (!member!.isActive) {
+      return const Left(MemberInactiveFailure('Your account is inactive and cannot borrow books.'));
+    }
 
     Book? book;
     (await _bookRepository.getBookById(bookId)).match((f) => earlyFailure = f, (b) => book = b);

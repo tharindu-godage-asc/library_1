@@ -34,11 +34,7 @@ class MyBorrowingsScreen extends ConsumerWidget {
         currentIndex: 0,
         onTap: (i) {
           if (i == 1) context.go('/home');
-          if (i == 2) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Profile is coming in a later phase')),
-            );
-          }
+          if (i == 2) context.go('/home/profile');
         },
       ),
       body: asyncBorrowings.when(
