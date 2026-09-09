@@ -1,40 +1,48 @@
 import '../../domain/entities/borrowing.dart';
 
-/// Unlike BookModel, this stores DateTime/enum values directly rather
-/// than ISO-8601 strings — deliberate shortcut, since this mock never
-/// actually serializes to real JSON text. Real string<->DateTime and
-/// string<->enum conversion is exactly what Phase 18 needs to add once
-/// there's a real API response shape to match, not before.
-class BorrowingModel {
+class BorrowingModel extends Borrowing {
   const BorrowingModel({
-    required this.id, required this.bookId, required this.memberId,
-    required this.borrowedDate, required this.dueDate,
-    this.returnedDate, required this.status,
+    required super.id, 
+    required super.bookId, 
+    required super.memberId,
+    required super.borrowedDate, 
+    required super.dueDate,
+    super.returnedDate, 
+    required super.status,
   });
-
-  final String id;
-  final String bookId;
-  final String memberId;
-  final DateTime borrowedDate;
-  final DateTime dueDate;
-  final DateTime? returnedDate;
-  final BorrowingStatus status;
 
   factory BorrowingModel.fromJson(Map<String, dynamic> json) => BorrowingModel(
         id: json['id'] as String,
         bookId: json['bookId'] as String,
         memberId: json['memberId'] as String,
-        borrowedDate: json['borrowedDate'] as DateTime,
-        dueDate: json['dueDate'] as DateTime,
-        returnedDate: json['returnedDate'] as DateTime?,
-        status: json['status'] as BorrowingStatus,
+        borrowedDate: _parseDateTime(json['borrowedDate']),
+        dueDate: _parseDateTime(json['dueDate']),
+        returnedDate: _parseNullableDateTime(json['returnedDate']),
+        status: _parseStatus(json['status']),
       );
 
   Map<String, dynamic> toJson() => {
         'id': id, 'bookId': bookId, 'memberId': memberId,
-        'borrowedDate': borrowedDate, 'dueDate': dueDate,
-        'returnedDate': returnedDate, 'status': status,
+        'borrowedDate': borrowedDate.toIso8601String(),
+        'dueDate': dueDate.toIso8601String(),
+        'returnedDate': returnedDate?.toIso8601String(),
+        'status': status.name,
       };
+
+  static DateTime _parseDateTime(Object? value) {
+    if (value is DateTime) return value;
+    return DateTime.parse(value as String);
+  }
+
+  static DateTime? _parseNullableDateTime(Object? value) {
+    if (value == null) return null;
+    return _parseDateTime(value);
+  }
+
+  static BorrowingStatus _parseStatus(Object? value) {
+    if (value is BorrowingStatus) return value;
+    return BorrowingStatus.values.byName(value as String);
+  }
 
   Borrowing toEntity() => Borrowing(
         id: id, bookId: bookId, memberId: memberId,

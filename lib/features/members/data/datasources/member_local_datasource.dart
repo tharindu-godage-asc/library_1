@@ -42,9 +42,6 @@ class MemberLocalDataSourceImpl implements MemberLocalDataSource {
     final index = _members.indexWhere((m) => m['id'] == model.id);
     if (index == -1) throw NotFoundException('Member not found: ${model.id}');
 
-    // Same "Email should be unique" rule enforced at Register, applied
-    // here too — editing your email into someone else's is the same
-    // violation as registering with a taken one.
     final emailTaken = _members.any(
       (m) => m['id'] != model.id && (m['email'] as String).toLowerCase() == model.email.toLowerCase(),
     );

@@ -4,26 +4,17 @@ import '../../domain/entities/book.dart';
 /// If the backend renames a field or nests something differently, this
 /// is the only file that changes — the Book entity and everything that
 /// consumes it stay untouched.
-class BookModel {
+class BookModel extends Book {
   const BookModel({
-    required this.id,
-    required this.title,
-    required this.author,
-    required this.isbn,
-    required this.publishedYear,
-    required this.totalCopies,
-    required this.availableCopies,
-    this.description,
+    required super.id,
+    required super.title,
+    required super.author,
+    required super.isbn,
+    required super.publishedYear,
+    required super.totalCopies,
+    required super.availableCopies,
+    super.description,
   });
-
-  final String id;
-  final String title;
-  final String author;
-  final String isbn;
-  final int publishedYear;
-  final int totalCopies;
-  final int availableCopies;
-  final String? description;
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(

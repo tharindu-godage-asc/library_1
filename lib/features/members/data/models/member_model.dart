@@ -18,14 +18,21 @@ class MemberModel {
         fullName: json['fullName'] as String,
         email: json['email'] as String,
         phoneNumber: json['phoneNumber'] as String,
-        registeredDate: json['registeredDate'] as DateTime,
+        registeredDate: _parseDateTime(json['registeredDate']),
         isActive: json['isActive'] as bool,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id, 'fullName': fullName, 'email': email,
-        'phoneNumber': phoneNumber, 'registeredDate': registeredDate, 'isActive': isActive,
+        'phoneNumber': phoneNumber,
+        'registeredDate': registeredDate.toIso8601String(),
+        'isActive': isActive,
       };
+
+  static DateTime _parseDateTime(Object? value) {
+    if (value is DateTime) return value;
+    return DateTime.parse(value as String);
+  }
 
   Member toEntity() => Member(
         id: id, fullName: fullName, email: email,
