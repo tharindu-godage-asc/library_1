@@ -240,7 +240,7 @@ final class MyBorrowingsProvider
   }
 }
 
-String _$myBorrowingsHash() => r'0584805f94866c09a416da4f5077671dcbb52e12';
+String _$myBorrowingsHash() => r'544a7d860b623f1dbbe62176cb7bdb55d3bf97de';
 
 @ProviderFor(borrowingById)
 final borrowingByIdProvider = BorrowingByIdFamily._();
@@ -296,7 +296,7 @@ final class BorrowingByIdProvider
   }
 }
 
-String _$borrowingByIdHash() => r'17cf3880565ce55ad7d80f11966bc80dd9556f69';
+String _$borrowingByIdHash() => r'9e2b5432dff2c81a720d16dad219b9b3fa78cd99';
 
 final class BorrowingByIdFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Borrowing>, String> {

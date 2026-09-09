@@ -34,7 +34,7 @@ class BookList extends _$BookList {
     final useCase = ref.read(getBooksUseCaseProvider);
     final result = await useCase();
     return result.match(
-      (failure) => throw Exception(failure.message),
+      (failure) => throw failure,
       (books) => books,
     );
   }
@@ -45,7 +45,7 @@ Future<Book> bookById(Ref ref, String id) async {
   final useCase = ref.read(getBookByIdUseCaseProvider);
   final result = await useCase(id);
   return result.match(
-    (failure) => throw Exception(failure.message),
+    (failure) => throw failure,
     (book) => book,
   );
 }

@@ -231,7 +231,7 @@ final class MyProfileProvider
   }
 }
 
-String _$myProfileHash() => r'e9deb19a9b4a085db50f0ff68b5c528d888f48bc';
+String _$myProfileHash() => r'8811648aaaf82b764fa35d7f7b56a719ee5a1a16';
 
 @ProviderFor(EditProfileController)
 final editProfileControllerProvider = EditProfileControllerProvider._();

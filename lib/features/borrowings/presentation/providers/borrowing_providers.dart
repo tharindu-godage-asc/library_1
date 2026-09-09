@@ -40,14 +40,14 @@ Future<List<Borrowing>> myBorrowings(Ref ref) async {
   if (session == null) return const [];
   final repository = ref.read(borrowingRepositoryProvider);
   final result = await repository.getBorrowingsForMember(session.userId);
-  return result.match((f) => throw Exception(f.message), (list) => list);
+  return result.match((f) => throw f, (list) => list);
 }
 
 @riverpod
 Future<Borrowing> borrowingById(Ref ref, String id) async {
   final repository = ref.read(borrowingRepositoryProvider);
   final result = await repository.getBorrowingById(id);
-  return result.match((f) => throw Exception(f.message), (b) => b);
+  return result.match((f) => throw f, (b) => b);
 }
 
 /// One-shot action state for the Confirm Borrowing screen. Deliberately

@@ -14,6 +14,7 @@ import '../bootstrap/app_bootstrap_provider.dart';
 import '../../features/auth/presentation/providers/auth_providers.dart';
 import '../../features/members/presentation/screens/profile_screen.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
+import '../error/widgets/not_found_route_screen.dart';
 
 
 part 'app_router.g.dart';
@@ -73,6 +74,7 @@ GoRouter router(Ref ref) {
     initialLocation: '/splash',
     refreshListenable: refresh,
     redirect: redirect,
+    errorBuilder: (context, state) => const NotFoundRouteScreen(),
     routes: [
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
       GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),

@@ -31,7 +31,7 @@ Future<Member?> myProfile(Ref ref) async {
   if (session == null) return null;
   final useCase = ref.read(getMemberUseCaseProvider);
   final result = await useCase(session.userId);
-  return result.match((f) => throw Exception(f.message), (m) => m);
+  return result.match((f) => throw f, (m) => m);
 }
 
 @riverpod

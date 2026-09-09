@@ -41,6 +41,7 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   shared_preferences: ^2.5.5
   go_router: ^18.0.1
+  connectivity_plus: ^6.1.5
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,12 @@ flutter:
     - assets/illustrations/illustration-onboarding-discover.png
     - assets/illustrations/illustration-onboarding-borrow.png
     - assets/illustrations/illustration-onboarding-milestones.png
+    - assets/illustrations/illustration-no-connection.png
+    - assets/illustrations/illustration-server-error.png
+    - assets/illustrations/illustration-not-found.png
+    - assets/illustrations/illustration-no-results.png
+    - assets/illustrations/illustration-no-borrowings.png
+    - assets/illustrations/illustration-no-notifications.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -224,7 +224,7 @@ final class BookListProvider
   BookList create() => BookList();
 }
 
-String _$bookListHash() => r'52ce048fc9bca2b243f4b51c67b094ecf35f8a0e';
+String _$bookListHash() => r'00ddc8b670b783cf7a05c2fd2d326bfa8c73d048';
 
 /// AsyncNotifier because it's the generated-code equivalent of the old
 /// FutureProvider — `build()` runs once, result is cached, and
@@ -300,7 +300,7 @@ final class BookByIdProvider
   }
 }
 
-String _$bookByIdHash() => r'62c450d3585a67cd654b86a6d532ac9d1a8a5cb8';
+String _$bookByIdHash() => r'5cd0575ad5a7d803e99c96f25d4f5558defc12ae';
 
 final class BookByIdFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Book>, String> {
