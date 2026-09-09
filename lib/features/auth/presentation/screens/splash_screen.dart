@@ -6,7 +6,6 @@
 // tokens as the rest of the app instead of baking them into a rendered file.
 //
 // Dependencies to add to pubspec.yaml:
-//   google_fonts: ^6.0.0
 //   path_drawing: ^1.0.1
 //
 // Usage:
@@ -18,7 +17,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 /// BooksnU cozy palette — same hex values as booksnu-color-tokens.json.
@@ -191,7 +189,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           wordmark,
           Text(
             'BooksNu',
-            style: GoogleFonts.bricolageGrotesque(
+            style: const TextStyle(
+              fontFamily: 'Bricolage Grotesque',
               fontWeight: FontWeight.w800,
               fontSize: 42,
               letterSpacing: -0.5,
@@ -204,7 +203,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           tagline,
           Text(
             'Read more. Discover more.',
-            style: GoogleFonts.plusJakartaSans(
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
               fontWeight: FontWeight.w500,
               fontSize: 15,
               letterSpacing: 0.2,

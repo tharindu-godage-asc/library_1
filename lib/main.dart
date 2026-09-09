@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'splash_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/navigation/app_router.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: LibraryApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LibraryApp extends ConsumerWidget {
+  const LibraryApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const SplashScreen(),
+      title: 'BooksnU',
+      theme: AppTheme.light,
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }
