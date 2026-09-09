@@ -75,8 +75,9 @@ GoRouter router(Ref ref) {
       return signedIn ? '/home' : '/login';
     }
 
-    // Ongoing guard between the two stacks. Onboarding's only exit is its
-    // own explicit context.go('/login') call; not re-derived here.
+    // Ongoing guard between the two stacks. Onboarding's only exit is
+    // OnboardingScreen._finish()'s own explicit context.go('/login') call
+    // (see that method's comment) — not re-derived here.
     final onLoginBranch = loc == '/login' || loc.startsWith('/login/');
     final onHomeBranch = loc == '/home' || loc.startsWith('/home/');
     if (signedIn && onLoginBranch) return '/home';

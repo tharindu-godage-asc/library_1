@@ -76,7 +76,7 @@ class _NotificationRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: bg ?? AppColors.primary.withOpacity(0.12),
+        color: bg ?? AppColors.primary,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(

@@ -8,11 +8,15 @@
 // Dependencies to add to pubspec.yaml:
 //   path_drawing: ^1.0.1
 //
-// Usage:
-//   Navigator.of(context).pushReplacement(
-//     MaterialPageRoute(builder: (_) => const SplashScreen()),
-//   );
-// or wire `onFinished` below to your router once the hold duration elapses.
+// Timing/navigation note: this widget is purely decorative — it holds no
+// timer and drives no navigation of its own. The actual "how long does
+// the splash stay up" and "where do we go next" logic lives entirely in
+// appBootstrapProvider (lib/core/bootstrap/app_bootstrap_provider.dart,
+// its own 2.4s Future.delayed) + app_router.dart's `redirect`. An earlier
+// version of this widget had its own `holdDuration`/`onFinished` params
+// for self-directed navigation, but the route never passed them, so that
+// mechanism was always inert — removed rather than kept as a second,
+// disconnected source of truth for the same 2.4s number.
 
 import 'dart:math' as math;
 
@@ -33,12 +37,7 @@ class _C {
 }
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key, this.holdDuration = const Duration(milliseconds: 2400), this.onFinished});
-
-  /// How long the splash stays up before [onFinished] fires. Set to null-safe
-  /// no-op if you're driving navigation from session-restore logic instead.
-  final Duration holdDuration;
-  final VoidCallback? onFinished;
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -60,10 +59,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.initState();
     _loop = AnimationController(vsync: this, duration: const Duration(days: 1))..forward();
     _entrance = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600))..forward();
-
-    if (widget.onFinished != null) {
-      Future.delayed(widget.holdDuration, widget.onFinished!);
-    }
   }
 
   @override
