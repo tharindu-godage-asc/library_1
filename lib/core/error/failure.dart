@@ -34,3 +34,7 @@ class BorrowingLimitExceededFailure extends Failure {
 class AlreadyReturnedFailure extends Failure {
   const AlreadyReturnedFailure(super.message);
 }
+
+class MemberInactiveFailure extends Failure {
+  const MemberInactiveFailure(super.message);
+}

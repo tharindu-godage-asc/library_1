@@ -13,9 +13,9 @@ import '../providers/book_providers.dart';
 import '../widgets/book_card.dart';
 import '../widgets/book_vertical_card.dart';
 import '../widgets/reminder_banner.dart';
-import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../borrowings/domain/entities/borrowing.dart';
 import '../../../borrowings/presentation/providers/borrowing_providers.dart';
+import '../../../members/presentation/providers/member_providers.dart';
 
 class BooksScreen extends ConsumerStatefulWidget {
   const BooksScreen({super.key});
@@ -74,7 +74,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
         currentIndex: 1,
         onTap: (i) {
           if (i == 0) context.go('/home/borrowings');
-          if (i == 2) _todo('Profile');
+          if (i == 2) context.go('/home/profile');
         },
       ),
       body: asyncBooks.when(
@@ -100,6 +100,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
   }
 
   Widget _buildContent(List<Book> books, List<Borrowing> myBorrowings) {
+    final asyncProfile = ref.watch(myProfileProvider);
     final matches = _searchMatches(books);
     final soonestDue = _soonestDueReminder(myBorrowings, books);
     final recommended = books.reversed.take(10).toList();
@@ -118,16 +119,13 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Good Evening', style: AppTextStyles.bodyMd),
-                    // TODO(auth): replace with the signed-in member's name
-                    // once the Auth feature provides a session.
-                    Text('Amaya Perera', style: AppTextStyles.headingLg),
+                    Text(asyncProfile.value?.fullName ?? '', style: AppTextStyles.headingLg),
                   ],
                 ),
                 GestureDetector(
-                  onTap: () => _todo('Notifications'),
+                  onTap: () => context.push('/home/notifications'),
                   child: Container(
-                    width: 44,
-                    height: 44,
+                    width: 44, height: 44,
                     decoration: const BoxDecoration(color: AppColors.surfaceAlt, shape: BoxShape.circle),
                     child: const Icon(Icons.notifications_none, color: AppColors.textPrimary),
                   ),
@@ -201,15 +199,6 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
                 ),
               ),
             ],
-             // 👇 INSERT HERE — new block, nothing else changes
-            const SizedBox(height: AppSpacing.xl),
-            Center(
-              child: TextButton(
-                onPressed: () => ref.read(authControllerProvider.notifier).logout(),
-                // TODO(members): remove once the real Profile screen's "Log out" exists
-                child: Text('Log out (temporary)', style: AppTextStyles.caption),
-              ),
-            ),
           ],
         ),
       ),

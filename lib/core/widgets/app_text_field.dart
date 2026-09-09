@@ -11,6 +11,7 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.errorText,
     this.hintText,
+    this.enabled = true,
   });
 
   final String label;
@@ -19,6 +20,7 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? errorText;
   final String? hintText;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class AppTextField extends StatelessWidget {
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
+          enabled: enabled,
           decoration: InputDecoration(
             hintText: hintText,
             errorText: errorText,

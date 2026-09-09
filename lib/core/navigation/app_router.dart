@@ -12,6 +12,9 @@ import '../../features/borrowings/presentation/screens/borrowing_details_screen.
 import '../../features/borrowings/presentation/screens/my_borrowings_screen.dart';
 import '../bootstrap/app_bootstrap_provider.dart';
 import '../../features/auth/presentation/providers/auth_providers.dart';
+import '../../features/members/presentation/screens/profile_screen.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
+
 
 part 'app_router.g.dart';
 
@@ -97,6 +100,11 @@ GoRouter router(Ref ref) {
             path: 'borrowings/:id',
             builder: (_, state) => BorrowingDetailsScreen(borrowingId: state.pathParameters['id']!),
           ),
+          GoRoute(
+            path: 'profile',
+            builder: (_, _) => const ProfileScreen(),
+          ),
+          GoRoute(path: 'notifications', builder: (_, _) => const NotificationsScreen()),
         ],
       ),
     ],
