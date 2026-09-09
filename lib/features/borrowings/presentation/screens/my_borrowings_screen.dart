@@ -6,7 +6,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_state_views.dart';
 import '../../../../core/widgets/illustrated_state_view.dart';
@@ -27,18 +26,6 @@ class MyBorrowingsScreen extends ConsumerWidget {
 
     return AppGradientScaffold(
       appBar: AppBar(title: const Text('My Borrowings')),
-      bottomNavigationBar: AppBottomNavBar(
-        items: const [
-          AppNavItem(icon: Icons.swap_vert, label: 'Borrowings'),
-          AppNavItem(icon: Icons.menu_book_outlined, label: 'Books'),
-          AppNavItem(icon: Icons.person_outline, label: 'Profile'),
-        ],
-        currentIndex: 0,
-        onTap: (i) {
-          if (i == 1) context.go('/home');
-          if (i == 2) context.go('/home/profile');
-        },
-      ),
       body: asyncBorrowings.when(
         loading: () => const LoadingView(),
         error: (e, _) => ErrorStateView(

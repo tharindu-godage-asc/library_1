@@ -15,7 +15,7 @@ import '../../features/auth/presentation/providers/auth_providers.dart';
 import '../../features/members/presentation/screens/profile_screen.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../error/widgets/not_found_route_screen.dart';
-
+import 'home_shell.dart';
 
 part 'app_router.g.dart';
 
@@ -85,28 +85,55 @@ GoRouter router(Ref ref) {
           GoRoute(path: 'register', builder: (_, _) => const RegisterScreen()),
         ],
       ),
-      GoRoute(
-        path: '/home',
-        builder: (_, _) => const BooksScreen(),
-        routes: [
-          GoRoute(
-            path: 'book/:id',
-            builder: (_, state) => BookDetailsScreen(bookId: state.pathParameters['id']!),
+      // One StatefulShellBranch per bottom-nav tab, in the same order as
+      // HomeShell's AppNavItem list (Borrowings=0, Books=1, Profile=2) so
+      // `navigationShell.currentIndex` lines up with the nav bar's
+      // `currentIndex` with no per-screen bookkeeping. Each branch keeps
+      // its own Navigator alive in the IndexedStack HomeShell wraps, so
+      // switching tabs preserves scroll position / in-progress state
+      // instead of tearing the screen down like the old context.go(...)
+      // tab switch did.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => HomeShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home/borrowings',
+                builder: (_, _) => const MyBorrowingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (_, state) => BorrowingDetailsScreen(borrowingId: state.pathParameters['id']!),
+                  ),
+                ],
+              ),
+            ],
           ),
-          GoRoute(
-            path: 'search',
-            builder: (_, state) => BookSearchResultsScreen(initialQuery: state.uri.queryParameters['q'] ?? ''),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (_, _) => const BooksScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'book/:id',
+                    builder: (_, state) => BookDetailsScreen(bookId: state.pathParameters['id']!),
+                  ),
+                  GoRoute(
+                    path: 'search',
+                    builder: (_, state) => BookSearchResultsScreen(initialQuery: state.uri.queryParameters['q'] ?? ''),
+                  ),
+                  GoRoute(path: 'notifications', builder: (_, _) => const NotificationsScreen()),
+                ],
+              ),
+            ],
           ),
-          GoRoute(path: 'borrowings', builder: (_, _) => const MyBorrowingsScreen()),
-          GoRoute(
-            path: 'borrowings/:id',
-            builder: (_, state) => BorrowingDetailsScreen(borrowingId: state.pathParameters['id']!),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(path: '/home/profile', builder: (_, _) => const ProfileScreen()),
+            ],
           ),
-          GoRoute(
-            path: 'profile',
-            builder: (_, _) => const ProfileScreen(),
-          ),
-          GoRoute(path: 'notifications', builder: (_, _) => const NotificationsScreen()),
         ],
       ),
     ],
