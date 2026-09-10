@@ -59,9 +59,8 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding: EdgeInsets.zero,
-                      behavior: SnackBarBehavior.floating,
-                      margin: const EdgeInsets.fromLTRB(11, 0, 11, 0),
-                      duration: const Duration(seconds: 6),
+                      behavior: SnackBarBehavior.fixed,
+                      duration: const Duration(seconds: 3),
                     ),
                   );
                 }

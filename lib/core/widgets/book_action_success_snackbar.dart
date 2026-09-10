@@ -23,8 +23,10 @@ class BookActionSuccessSnackBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFFFF8EC),
-        border: Border.all(color: AppColors.primary, width: 2),
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.lg),
+          topRight: Radius.circular(AppRadius.lg),
+        ),
       ),
       padding: const EdgeInsets.fromLTRB(18, 12, 18, 14),
       child: Column(
