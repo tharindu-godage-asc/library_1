@@ -6,6 +6,7 @@ import '../../../members/domain/entities/member.dart';
 import '../../../members/domain/repositories/member_repository.dart';
 import '../entities/borrowing.dart';
 import '../repositories/borrowing_repository.dart';
+import 'dart:async'; 
 
 class BorrowBook {
   const BorrowBook(this._bookRepository, this._borrowingRepository, this._memberRepository);
@@ -19,24 +20,34 @@ class BorrowBook {
   }) async {
     Failure? earlyFailure;
 
+    // The three reads below don't depend on each other's results (only on
+    // the memberId/bookId params already in hand), so they're fetched
+    // concurrently here instead of one-await-at-a-time. What must NOT
+    // change is failure precedence: if multiple things are wrong at once,
+    // the checks below still run in the same order (member, then book,
+    // then borrowing limit) so the same failure wins as before.
+    final (memberResult, bookResult, borrowingsResult) = await (
+      _memberRepository.getMemberById(memberId),
+      _bookRepository.getBookById(bookId),
+      _borrowingRepository.getBorrowingsForMember(memberId),
+    ).wait;
+
     Member? member;
-    (await _memberRepository.getMemberById(memberId)).match((f) => earlyFailure = f, (m) => member = m);
+    memberResult.match((f) => earlyFailure = f, (m) => member = m);
     if (earlyFailure != null) return Left(earlyFailure!);
     if (!member!.isActive) {
       return const Left(MemberInactiveFailure('Your account is inactive and cannot borrow books.'));
     }
 
     Book? book;
-    (await _bookRepository.getBookById(bookId)).match((f) => earlyFailure = f, (b) => book = b);
+    bookResult.match((f) => earlyFailure = f, (b) => book = b);
     if (earlyFailure != null) return Left(earlyFailure!);
-
     if (!book!.isAvailable) {
       return Left(BookUnavailableFailure('${book!.title} has no available copies right now.'));
     }
 
     List<Borrowing>? existing;
-    (await _borrowingRepository.getBorrowingsForMember(memberId))
-        .match((f) => earlyFailure = f, (list) => existing = list);
+    borrowingsResult.match((f) => earlyFailure = f, (list) => existing = list);
     if (earlyFailure != null) return Left(earlyFailure!);
 
     final activeCount = existing!.where((b) => b.status != BorrowingStatus.returned).length;
