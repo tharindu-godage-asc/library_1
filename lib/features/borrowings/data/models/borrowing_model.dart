@@ -56,3 +56,15 @@ class BorrowingModel extends Borrowing {
         returnedDate: b.returnedDate, status: b.status,
       );
 }
+
+/*
+ * Borrowing Data Flow & Lifecycle:
+ * 
+ * 1. Incoming Data (Read / Fetch / GET)
+ *    - JSON -> Model: BorrowingModel.fromJson(json) parses raw network/database data (with safe type handling for dates and status enums) into a model.
+ *    - Model -> Entity: model.toEntity() converts that model into a pure Borrowing entity so your domain layer and UI can use it cleanly.
+ * 
+ * 2. Outgoing Data (Write / Update / POST / PUT)
+ *    - Entity -> Model: BorrowingModel.fromEntity(borrowing) takes your pure domain entity from the UI/Use Case and wraps it into a BorrowingModel.
+ *    - Model -> JSON: model.toJson() serializes that model into a key-value map (converting DateTimes to ISO8601 strings and status enums to strings) to be sent to your API.
+ */
