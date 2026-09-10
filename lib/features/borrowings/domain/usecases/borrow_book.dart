@@ -6,7 +6,7 @@ import '../../../members/domain/entities/member.dart';
 import '../../../members/domain/repositories/member_repository.dart';
 import '../entities/borrowing.dart';
 import '../repositories/borrowing_repository.dart';
-import 'dart:async'; 
+import 'dart:async';
 
 class BorrowBook {
   const BorrowBook(this._bookRepository, this._borrowingRepository, this._memberRepository);
