@@ -12,10 +12,7 @@ enum BootstrapDestination { onboarding, login, home }
 // ref.listen); it needs to be alive on its own terms.
 @Riverpod(keepAlive: true)
 Future<BootstrapDestination> appBootstrap(Ref ref) async {
-  // Preserves the splash screen's original 2.4s brand-timing hold, now
-  // driven by real state instead of a bare timer + callback.
   final minimumHold = Future.delayed(const Duration(milliseconds: 2400));
-
   final onboardingPref = ref.read(onboardingPreferenceProvider);
   final hasOnboarded = await onboardingPref.hasCompletedOnboarding();
 
