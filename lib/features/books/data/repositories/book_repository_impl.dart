@@ -44,3 +44,18 @@ class BookRepositoryImpl implements BookRepository {
     }
   }
 }
+
+/*
+ * BookRepositoryImpl:
+ * 
+ * Acts as the concrete implementation of the BookRepository interface. 
+ * It coordinates data operations by talking to the BookLocalDataSource 
+ * and translating data models to domain entities (and vice versa) 
+ * while wrapping results in an fpdart Either<Failure, T> type for 
+ * robust, functional error handling.
+ * 
+ * - Read Operations (getBooks, getBookById): 
+ *   Fetches BookModels -> converts them via toEntity() -> returns Right(Entity).
+ * - Write Operations (updateBook): 
+ *   Takes a domain Entity -> converts it via BookModel.fromEntity() -> passes to data source.
+ */

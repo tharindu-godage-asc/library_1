@@ -50,6 +50,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   // onboarding complete before navigating, or appBootstrapProvider will
   // send the user right back to onboarding on the next cold start,
   // silently undoing the whole point of this slice.
+  //
+  // Also: this context.go('/login') is the one deliberate exception to
+  // app_router.dart's `redirect` owning every stack transition (see the
+  // "Navigation rule" comment on router() there) — onboarding-complete is
+  // a one-time, user-triggered transition that redirect never re-derives.
   Future<void> _finish() async {
     await ref.read(onboardingPreferenceProvider).markCompleted();
     if (!mounted) return;

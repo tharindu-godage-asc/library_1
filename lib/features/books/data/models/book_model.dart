@@ -1,9 +1,5 @@
 import '../../domain/entities/book.dart';
 
-/// Knows how to read the API's JSON shape and map it to a domain [Book].
-/// If the backend renames a field or nests something differently, this
-/// is the only file that changes — the Book entity and everything that
-/// consumes it stay untouched.
 class BookModel extends Book {
   const BookModel({
     required super.id,
@@ -57,3 +53,15 @@ class BookModel extends Book {
         availableCopies: book.availableCopies, description: book.description,
       );
 }
+
+/*
+ * Book Data Flow & Lifecycle:
+ * 
+ * 1. Incoming Data (Read / Fetch / GET)
+ *    - JSON -> Model: BookModel.fromJson(json) parses the raw network/database response into a model.
+ *    - Model -> Entity: model.toEntity() converts that model into a pure Book entity so your domain layer and UI can use it cleanly.
+ * 
+ * 2. Outgoing Data (Write / Update / POST / PUT)
+ *    - Entity -> Model: BookModel.fromEntity(book) takes your pure domain entity from the UI/Use Case and wraps it into a BookModel.
+ *    - Model -> JSON: model.toJson() serializes that model into a key-value map so it can be sent off to your API.
+ */

@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_confirm_sheet.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../providers/auth_providers.dart';
@@ -65,12 +66,45 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _ => 'Something went wrong. Please try again.',
       };
 
+  // Any field with real content means leaving would lose something —
+  // matches the confirm-before-losing-work convention AppConfirmSheet
+  // already establishes elsewhere (borrow/return), which this screen
+  // was the one place skipping.
+  bool get _hasChanges =>
+      _nameController.text.isNotEmpty ||
+      _emailController.text.isNotEmpty ||
+      _phoneController.text.isNotEmpty ||
+      _passwordController.text.isNotEmpty ||
+      _confirmController.text.isNotEmpty;
+
+  Future<void> _confirmDiscardAndPop() async {
+    if (!_hasChanges) {
+      context.pop();
+      return;
+    }
+    final confirmed = await AppConfirmSheet.show(
+      context,
+      title: 'Discard this registration?',
+      message: 'Your entered details will be lost.',
+      confirmLabel: 'Discard',
+      cancelLabel: 'Keep editing',
+    );
+    if (!mounted || confirmed != true) return;
+    context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
-    return AppGradientScaffold(
+    return PopScope(
+      canPop: !_hasChanges,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _confirmDiscardAndPop();
+      },
+      child: AppGradientScaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +168,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             const SizedBox(height: AppSpacing.lg),
             Center(
               child: GestureDetector(
-                onTap: () => context.pop(),
+                onTap: _confirmDiscardAndPop,
                 child: RichText(
                   text: TextSpan(
                     style: AppTextStyles.bodyMd,
@@ -149,6 +183,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ],
         ),
       ),
+    )
     );
   }
 }

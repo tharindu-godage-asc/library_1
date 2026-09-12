@@ -6,7 +6,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 7,
-    "availableCopies": 4
+    "availableCopies": 4,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 4,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   },
   {
     "id": 3,
@@ -24,7 +26,8 @@
     "isbn": "9780201633610",
     "publishedYear": 1994,
     "totalCopies": 10,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "The foundational catalog of object-oriented design patterns, showing how to solve recurring software design problems with reusable solutions."
   },
   {
     "id": 4,
@@ -33,7 +36,8 @@
     "isbn": "9780134757599",
     "publishedYear": 2018,
     "totalCopies": 8,
-    "availableCopies": 6
+    "availableCopies": 6,
+    "description": "A catalog of techniques for improving the design of existing code without changing its external behavior."
   },
   {
     "id": 5,
@@ -42,7 +46,8 @@
     "isbn": "9780321125217",
     "publishedYear": 2003,
     "totalCopies": 5,
-    "availableCopies": 2
+    "availableCopies": 2,
+    "description": "Introduces a design approach for tackling complex software by modeling it closely around the business domain."
   },
   {
     "id": 6,
@@ -51,7 +56,8 @@
     "isbn": "9780134685991",
     "publishedYear": 2018,
     "totalCopies": 10,
-    "availableCopies": 10
+    "availableCopies": 10,
+    "description": "A collection of best practices and idioms for writing clear, correct, and efficient Java code."
   },
   {
     "id": 7,
@@ -60,7 +66,8 @@
     "isbn": "9781491904244",
     "publishedYear": 2015,
     "totalCopies": 1,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "A deep dive into the core mechanisms of JavaScript, exploring scope, closures, prototypes, and more."
   },
   {
     "id": 8,
@@ -69,7 +76,8 @@
     "isbn": "9780596007126",
     "publishedYear": 2004,
     "totalCopies": 2,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "An engaging, visually rich introduction to object-oriented design patterns using real-world examples."
   },
   {
     "id": 9,
@@ -78,7 +86,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 2,
-    "availableCopies": 2
+    "availableCopies": 2,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 10,
@@ -87,7 +96,8 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 5,
-    "availableCopies": 5
+    "availableCopies": 5,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   },
   {
     "id": 11,
@@ -96,7 +106,8 @@
     "isbn": "9780201633610",
     "publishedYear": 1994,
     "totalCopies": 3,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "The foundational catalog of object-oriented design patterns, showing how to solve recurring software design problems with reusable solutions."
   },
   {
     "id": 12,
@@ -105,7 +116,8 @@
     "isbn": "9780134757599",
     "publishedYear": 2018,
     "totalCopies": 8,
-    "availableCopies": 8
+    "availableCopies": 8,
+    "description": "A catalog of techniques for improving the design of existing code without changing its external behavior."
   },
   {
     "id": 13,
@@ -114,7 +126,8 @@
     "isbn": "9780321125217",
     "publishedYear": 2003,
     "totalCopies": 9,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "Introduces a design approach for tackling complex software by modeling it closely around the business domain."
   },
   {
     "id": 14,
@@ -123,7 +136,8 @@
     "isbn": "9780134685991",
     "publishedYear": 2018,
     "totalCopies": 6,
-    "availableCopies": 5
+    "availableCopies": 5,
+    "description": "A collection of best practices and idioms for writing clear, correct, and efficient Java code."
   },
   {
     "id": 15,
@@ -132,7 +146,8 @@
     "isbn": "9781491904244",
     "publishedYear": 2015,
     "totalCopies": 1,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "A deep dive into the core mechanisms of JavaScript, exploring scope, closures, prototypes, and more."
   },
   {
     "id": 16,
@@ -141,7 +156,8 @@
     "isbn": "9780596007126",
     "publishedYear": 2004,
     "totalCopies": 6,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "An engaging, visually rich introduction to object-oriented design patterns using real-world examples."
   },
   {
     "id": 17,
@@ -150,7 +166,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 9,
-    "availableCopies": 6
+    "availableCopies": 6,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 18,
@@ -159,7 +176,8 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 8,
-    "availableCopies": 6
+    "availableCopies": 6,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   },
   {
     "id": 19,
@@ -168,7 +186,8 @@
     "isbn": "9780201633610",
     "publishedYear": 1994,
     "totalCopies": 10,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "The foundational catalog of object-oriented design patterns, showing how to solve recurring software design problems with reusable solutions."
   },
   {
     "id": 20,
@@ -177,7 +196,8 @@
     "isbn": "9780134757599",
     "publishedYear": 2018,
     "totalCopies": 10,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "A catalog of techniques for improving the design of existing code without changing its external behavior."
   },
   {
     "id": 21,
@@ -186,7 +206,8 @@
     "isbn": "9780321125217",
     "publishedYear": 2003,
     "totalCopies": 8,
-    "availableCopies": 8
+    "availableCopies": 8,
+    "description": "Introduces a design approach for tackling complex software by modeling it closely around the business domain."
   },
   {
     "id": 22,
@@ -195,7 +216,8 @@
     "isbn": "9780134685991",
     "publishedYear": 2018,
     "totalCopies": 2,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "A collection of best practices and idioms for writing clear, correct, and efficient Java code."
   },
   {
     "id": 23,
@@ -204,7 +226,8 @@
     "isbn": "9781491904244",
     "publishedYear": 2015,
     "totalCopies": 6,
-    "availableCopies": 6
+    "availableCopies": 6,
+    "description": "A deep dive into the core mechanisms of JavaScript, exploring scope, closures, prototypes, and more."
   },
   {
     "id": 24,
@@ -213,7 +236,8 @@
     "isbn": "9780596007126",
     "publishedYear": 2004,
     "totalCopies": 7,
-    "availableCopies": 2
+    "availableCopies": 2,
+    "description": "An engaging, visually rich introduction to object-oriented design patterns using real-world examples."
   },
   {
     "id": 25,
@@ -222,7 +246,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 10,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 26,
@@ -231,7 +256,8 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 10,
-    "availableCopies": 2
+    "availableCopies": 2,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   },
   {
     "id": 27,
@@ -240,7 +266,8 @@
     "isbn": "9780201633610",
     "publishedYear": 1994,
     "totalCopies": 4,
-    "availableCopies": 4
+    "availableCopies": 4,
+    "description": "The foundational catalog of object-oriented design patterns, showing how to solve recurring software design problems with reusable solutions."
   },
   {
     "id": 28,
@@ -249,7 +276,8 @@
     "isbn": "9780134757599",
     "publishedYear": 2018,
     "totalCopies": 3,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "A catalog of techniques for improving the design of existing code without changing its external behavior."
   },
   {
     "id": 29,
@@ -258,7 +286,8 @@
     "isbn": "9780321125217",
     "publishedYear": 2003,
     "totalCopies": 1,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "Introduces a design approach for tackling complex software by modeling it closely around the business domain."
   },
   {
     "id": 30,
@@ -267,7 +296,8 @@
     "isbn": "9780134685991",
     "publishedYear": 2018,
     "totalCopies": 5,
-    "availableCopies": 5
+    "availableCopies": 5,
+    "description": "A collection of best practices and idioms for writing clear, correct, and efficient Java code."
   },
   {
     "id": 31,
@@ -276,7 +306,8 @@
     "isbn": "9781491904244",
     "publishedYear": 2015,
     "totalCopies": 8,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "A deep dive into the core mechanisms of JavaScript, exploring scope, closures, prototypes, and more."
   },
   {
     "id": 32,
@@ -285,7 +316,8 @@
     "isbn": "9780596007126",
     "publishedYear": 2004,
     "totalCopies": 5,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "An engaging, visually rich introduction to object-oriented design patterns using real-world examples."
   },
   {
     "id": 33,
@@ -294,7 +326,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 8,
-    "availableCopies": 5
+    "availableCopies": 5,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 34,
@@ -303,7 +336,8 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 8,
-    "availableCopies": 5
+    "availableCopies": 5,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   },
   {
     "id": 35,
@@ -312,7 +346,8 @@
     "isbn": "9780201633610",
     "publishedYear": 1994,
     "totalCopies": 10,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "The foundational catalog of object-oriented design patterns, showing how to solve recurring software design problems with reusable solutions."
   },
   {
     "id": 36,
@@ -321,7 +356,8 @@
     "isbn": "9780134757599",
     "publishedYear": 2018,
     "totalCopies": 3,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "A catalog of techniques for improving the design of existing code without changing its external behavior."
   },
   {
     "id": 37,
@@ -330,7 +366,8 @@
     "isbn": "9780321125217",
     "publishedYear": 2003,
     "totalCopies": 9,
-    "availableCopies": 2
+    "availableCopies": 2,
+    "description": "Introduces a design approach for tackling complex software by modeling it closely around the business domain."
   },
   {
     "id": 38,
@@ -339,7 +376,8 @@
     "isbn": "9780134685991",
     "publishedYear": 2018,
     "totalCopies": 5,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "A collection of best practices and idioms for writing clear, correct, and efficient Java code."
   },
   {
     "id": 39,
@@ -348,7 +386,8 @@
     "isbn": "9781491904244",
     "publishedYear": 2015,
     "totalCopies": 8,
-    "availableCopies": 4
+    "availableCopies": 4,
+    "description": "A deep dive into the core mechanisms of JavaScript, exploring scope, closures, prototypes, and more."
   },
   {
     "id": 40,
@@ -357,7 +396,8 @@
     "isbn": "9780596007126",
     "publishedYear": 2004,
     "totalCopies": 5,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "An engaging, visually rich introduction to object-oriented design patterns using real-world examples."
   },
   {
     "id": 41,
@@ -366,7 +406,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 7,
-    "availableCopies": 3
+    "availableCopies": 3,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 42,
@@ -375,7 +416,8 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 8,
-    "availableCopies": 4
+    "availableCopies": 4,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   },
   {
     "id": 43,
@@ -384,7 +426,8 @@
     "isbn": "9780201633610",
     "publishedYear": 1994,
     "totalCopies": 1,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "The foundational catalog of object-oriented design patterns, showing how to solve recurring software design problems with reusable solutions."
   },
   {
     "id": 44,
@@ -393,7 +436,8 @@
     "isbn": "9780134757599",
     "publishedYear": 2018,
     "totalCopies": 10,
-    "availableCopies": 10
+    "availableCopies": 10,
+    "description": "A catalog of techniques for improving the design of existing code without changing its external behavior."
   },
   {
     "id": 45,
@@ -402,7 +446,8 @@
     "isbn": "9780321125217",
     "publishedYear": 2003,
     "totalCopies": 1,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "Introduces a design approach for tackling complex software by modeling it closely around the business domain."
   },
   {
     "id": 46,
@@ -411,7 +456,8 @@
     "isbn": "9780134685991",
     "publishedYear": 2018,
     "totalCopies": 3,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "A collection of best practices and idioms for writing clear, correct, and efficient Java code."
   },
   {
     "id": 47,
@@ -420,7 +466,8 @@
     "isbn": "9781491904244",
     "publishedYear": 2015,
     "totalCopies": 2,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "A deep dive into the core mechanisms of JavaScript, exploring scope, closures, prototypes, and more."
   },
   {
     "id": 48,
@@ -429,7 +476,8 @@
     "isbn": "9780596007126",
     "publishedYear": 2004,
     "totalCopies": 3,
-    "availableCopies": 2
+    "availableCopies": 2,
+    "description": "An engaging, visually rich introduction to object-oriented design patterns using real-world examples."
   },
   {
     "id": 49,
@@ -438,7 +486,8 @@
     "isbn": "9780132350884",
     "publishedYear": 2008,
     "totalCopies": 3,
-    "availableCopies": 1
+    "availableCopies": 1,
+    "description": "A hands-on guide to writing readable, maintainable code, packed with principles and practices for good software craftsmanship."
   },
   {
     "id": 50,
@@ -447,6 +496,7 @@
     "isbn": "9780135957059",
     "publishedYear": 2019,
     "totalCopies": 3,
-    "availableCopies": 0
+    "availableCopies": 0,
+    "description": "A classic guide packed with practical tips and philosophies for becoming a more effective, adaptable software developer."
   }
 ]

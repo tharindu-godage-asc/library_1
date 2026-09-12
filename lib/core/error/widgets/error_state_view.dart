@@ -5,11 +5,6 @@ import '../../widgets/illustrated_state_view.dart';
 import '../app_error_type.dart';
 import '../failure.dart';
 
-/// Drop-in replacement for the old text-only `ErrorView`. Picks the
-/// illustrated screen to show for a failed Riverpod `AsyncValue`: always
-/// prefers the No-Internet illustration while offline (regardless of the
-/// underlying failure), otherwise maps the [Failure] subtype to the
-/// matching 404/500/unexpected illustration.
 class ErrorStateView extends ConsumerWidget {
   const ErrorStateView({super.key, required this.error, required this.onRetry, this.onSecondaryAction});
 
@@ -36,17 +31,31 @@ class ErrorStateView extends ConsumerWidget {
     }
 
     return switch (appErrorTypeFrom(_failure)) {
-      AppErrorType.notFound => IllustratedStateView(
+      NotFoundErrorType() => IllustratedStateView(
           illustrationAsset: 'assets/illustrations/illustration-not-found.png',
           heading: "We Couldn't Find That",
           message: _failure.message,
           primaryLabel: 'Try Again',
           onPrimary: onRetry,
         ),
-      AppErrorType.server || AppErrorType.unexpected => IllustratedStateView(
+      ServerErrorType() || UnexpectedErrorType() => IllustratedStateView(
           illustrationAsset: 'assets/illustrations/illustration-server-error.png',
           heading: 'Something Went Wrong',
           message: 'We hit a snag loading this page. Please try again in a moment.',
+          primaryLabel: 'Try Again',
+          onPrimary: onRetry,
+        ),
+      AccessDeniedErrorType() => IllustratedStateView(
+          illustrationAsset: 'assets/illustrations/illustration-server-error.png',
+          heading: 'Access Restricted',
+          message: _failure.message,
+          primaryLabel: 'Try Again',
+          onPrimary: onRetry,
+        ),
+      BusinessRuleErrorType(:final message) => IllustratedStateView(
+          illustrationAsset: 'assets/illustrations/illustration-server-error.png',
+          heading: 'Action Not Available',
+          message: message,
           primaryLabel: 'Try Again',
           onPrimary: onRetry,
         ),

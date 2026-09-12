@@ -5,15 +5,6 @@ import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';
 import 'app_button.dart';
 
-/// A thin wrapper around Material's showDialog — that's the actual "MUI"
-/// component giving the dimmed scrim and centered, all-corners-rounded
-/// card, not something built from primitives.
-///
-/// Shaped as a static function rather than a widget class, unlike every
-/// other core/widgets file so far — that's deliberate, not inconsistent:
-/// showDialog is itself an imperative "ask and await an answer" function,
-/// not something you place in a widget tree, so this follows that same
-/// shape rather than fighting it.
 class AppConfirmSheet {
   const AppConfirmSheet._(); // not meant to be instantiated
 
@@ -27,7 +18,7 @@ class AppConfirmSheet {
     return showDialog<bool>(
       context: context,
       builder: (dialogContext) => Dialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),

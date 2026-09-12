@@ -46,23 +46,14 @@ class BorrowingDetailsScreen extends ConsumerWidget {
               ref.listen(returnActionControllerProvider, (previous, next) {
                 if (next.value != null && next.value!.id == borrowingId && !next.isLoading) {
                   final returnedBorrowing = next.value!;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: BookActionSuccessSnackBar(
-                        title: book.title,
-                        heading: 'Book Returned!',
-                        message: 'Thanks for returning ${book.title}.\nIt\'s back on the shelf for the next reader.',
-                        dateLabel: returnedBorrowing.returnedDate == null
-                            ? 'Returned today'
-                            : formatReturnedLabel(returnedBorrowing.returnedDate!),
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.zero,
-                      behavior: SnackBarBehavior.floating,
-                      margin: const EdgeInsets.fromLTRB(11, 0, 11, 0),
-                      duration: const Duration(seconds: 6),
-                    ),
+                  BookActionSuccessSheet.show(
+                    context,
+                    title: book.title,
+                    heading: 'Book Returned!',
+                    message: 'Thanks for returning ${book.title}.\nIt\'s back on the shelf for the next reader.',
+                    dateLabel: returnedBorrowing.returnedDate == null
+                        ? 'Returned today'
+                        : formatReturnedLabel(returnedBorrowing.returnedDate!),
                   );
                 }
               });

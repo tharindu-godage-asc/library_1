@@ -5,7 +5,6 @@ import '../../../../core/error/widgets/error_state_view.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
 import '../../../../core/widgets/app_search_field.dart';
 import '../../../../core/widgets/app_state_views.dart';
@@ -66,18 +65,6 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
 
     return AppGradientScaffold(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      bottomNavigationBar: AppBottomNavBar(
-        items: const [
-          AppNavItem(icon: Icons.swap_vert, label: 'Borrowings'),
-          AppNavItem(icon: Icons.menu_book_outlined, label: 'Books'),
-          AppNavItem(icon: Icons.person_outline, label: 'Profile'),
-        ],
-        currentIndex: 1,
-        onTap: (i) {
-          if (i == 0) context.go('/home/borrowings');
-          if (i == 2) context.go('/home/profile');
-        },
-      ),
       body: asyncBooks.when(
         loading: () => const LoadingView(),
         error: (err, stack) => ErrorStateView(

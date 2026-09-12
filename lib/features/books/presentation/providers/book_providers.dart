@@ -21,12 +21,6 @@ GetBooks getBooksUseCase(Ref ref) => GetBooks(ref.read(bookRepositoryProvider));
 @riverpod
 GetBookById getBookByIdUseCase(Ref ref) => GetBookById(ref.read(bookRepositoryProvider));
 
-/// AsyncNotifier because it's the generated-code equivalent of the old
-/// FutureProvider — `build()` runs once, result is cached, and
-/// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
-/// outside) re-runs it. `.match()` unwraps the Either right here so
-/// nothing downstream has to think about Left/Right — the UI only ever
-/// sees a plain `AsyncValue<List<Book>>`, same as before this change.
 @riverpod
 class BookList extends _$BookList {
   @override
@@ -49,3 +43,18 @@ Future<Book> bookById(Ref ref, String id) async {
     (book) => book,
   );
 }
+
+/*
+ * Riverpod Architecture & Dependency Injection Map:
+ * 
+ * 1. Data Layer Providers:
+ *    - bookLocalDataSourceProvider: Constructs the concrete BookLocalDataSourceImpl.
+ *    - bookRepositoryProvider: Constructs BookRepositoryImpl, injecting the local data source.
+ * 
+ * 2. Domain Layer (Use Case) Providers:
+ *    - getBooksUseCaseProvider / getBookByIdUseCaseProvider: Instantiates the GetBooks and GetBookById use cases, injecting the book repository.
+ * 
+ * 3. Presentation Layer (State Management) Providers:
+ *    - bookListProvider: AsyncNotifier that executes GetBooks() once, caches the collection, and unwraps the Either type so UI widgets cleanly consume a plain AsyncValue<List<Book>>.
+ *    - bookByIdProvider(id): Family provider that executes GetBookById(id) for a specific identifier, handling error/success unwrapping for individual views.
+ */

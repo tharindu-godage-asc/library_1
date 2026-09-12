@@ -34,22 +34,12 @@ class BookDetailsScreen extends ConsumerWidget {
       final borrowing = next.value;
       if (borrowing != null) {
         final title = asyncBook.asData?.value.title ?? 'The book';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: BookActionSuccessSnackBar(
-              title: title,
-              heading: 'Book Borrowed!',
-              message:
-                  '$title is now yours. Bring it back by the\ndue date below.',
-              dateLabel: 'Due ${formatShortDate(borrowing.dueDate)}',
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            padding: EdgeInsets.zero,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.fromLTRB(11, 0, 11, 0),
-            duration: const Duration(seconds: 6),
-          ),
+        BookActionSuccessSheet.show(
+          context,
+          title: title,
+          heading: 'Book Borrowed!',
+          message: '$title is now yours. Bring it back by the\ndue date below.',
+          dateLabel: 'Due ${formatShortDate(borrowing.dueDate)}',
         );
       }
       if (next.hasError) {

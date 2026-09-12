@@ -15,7 +15,7 @@ import '../../features/auth/presentation/providers/auth_providers.dart';
 import '../../features/members/presentation/screens/profile_screen.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../error/widgets/not_found_route_screen.dart';
-
+import 'home_shell.dart';
 
 part 'app_router.g.dart';
 
@@ -31,6 +31,20 @@ class _RouterRefreshNotifier extends ChangeNotifier {
 /// and the Main Stack (`/home`, ...). Replaces the old AuthGate widget —
 /// no screen navigates to Home or back to Login on its own anymore;
 /// changing auth state is enough, and this is the only place that reacts.
+///
+/// Navigation rule for screens under the Main Stack:
+///  - Switching bottom-nav tabs -> `navigationShell.goBranch(i)` (only
+///    HomeShell does this). Never `context.go('/home/...')` for a tab
+///    switch — that's what tore down each tab's state before this file
+///    grew a `StatefulShellRoute`.
+///  - Drilling into more content (a book, a borrowing, search results,
+///    notifications) -> `context.push(...)`, so back returns you to
+///    where you were.
+///  - Deliberately resetting a tab back to its root from an error/empty
+///    state (e.g. "Browse Books" after an empty Borrowings list, or from
+///    [NotFoundRouteScreen]) -> `context.go('/home')` is correct here,
+///    not a bug — the intent is "start fresh at Books' root", not
+///    "preserve wherever Books was last left".
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   final refresh = _RouterRefreshNotifier();
@@ -61,8 +75,9 @@ GoRouter router(Ref ref) {
       return signedIn ? '/home' : '/login';
     }
 
-    // Ongoing guard between the two stacks. Onboarding's only exit is its
-    // own explicit context.go('/login') call; not re-derived here.
+    // Ongoing guard between the two stacks. Onboarding's only exit is
+    // OnboardingScreen._finish()'s own explicit context.go('/login') call
+    // (see that method's comment) — not re-derived here.
     final onLoginBranch = loc == '/login' || loc.startsWith('/login/');
     final onHomeBranch = loc == '/home' || loc.startsWith('/home/');
     if (signedIn && onLoginBranch) return '/home';
@@ -85,28 +100,55 @@ GoRouter router(Ref ref) {
           GoRoute(path: 'register', builder: (_, _) => const RegisterScreen()),
         ],
       ),
-      GoRoute(
-        path: '/home',
-        builder: (_, _) => const BooksScreen(),
-        routes: [
-          GoRoute(
-            path: 'book/:id',
-            builder: (_, state) => BookDetailsScreen(bookId: state.pathParameters['id']!),
+      // One StatefulShellBranch per bottom-nav tab, in the same order as
+      // HomeShell's AppNavItem list (Borrowings=0, Books=1, Profile=2) so
+      // `navigationShell.currentIndex` lines up with the nav bar's
+      // `currentIndex` with no per-screen bookkeeping. Each branch keeps
+      // its own Navigator alive in the IndexedStack HomeShell wraps, so
+      // switching tabs preserves scroll position / in-progress state
+      // instead of tearing the screen down like the old context.go(...)
+      // tab switch did.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => HomeShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home/borrowings',
+                builder: (_, _) => const MyBorrowingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (_, state) => BorrowingDetailsScreen(borrowingId: state.pathParameters['id']!),
+                  ),
+                ],
+              ),
+            ],
           ),
-          GoRoute(
-            path: 'search',
-            builder: (_, state) => BookSearchResultsScreen(initialQuery: state.uri.queryParameters['q'] ?? ''),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (_, _) => const BooksScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'book/:id',
+                    builder: (_, state) => BookDetailsScreen(bookId: state.pathParameters['id']!),
+                  ),
+                  GoRoute(
+                    path: 'search',
+                    builder: (_, state) => BookSearchResultsScreen(initialQuery: state.uri.queryParameters['q'] ?? ''),
+                  ),
+                  GoRoute(path: 'notifications', builder: (_, _) => const NotificationsScreen()),
+                ],
+              ),
+            ],
           ),
-          GoRoute(path: 'borrowings', builder: (_, _) => const MyBorrowingsScreen()),
-          GoRoute(
-            path: 'borrowings/:id',
-            builder: (_, state) => BorrowingDetailsScreen(borrowingId: state.pathParameters['id']!),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(path: '/home/profile', builder: (_, _) => const ProfileScreen()),
+            ],
           ),
-          GoRoute(
-            path: 'profile',
-            builder: (_, _) => const ProfileScreen(),
-          ),
-          GoRoute(path: 'notifications', builder: (_, _) => const NotificationsScreen()),
         ],
       ),
     ],

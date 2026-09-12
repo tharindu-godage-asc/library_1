@@ -29,7 +29,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   ];
 
   AuthSessionModel _sessionFor(Map<String, dynamic> user) {
-    // TODO(phase-18): a real backend returns only { accessToken,
+    // -TODO(phase-18): a real backend returns only { accessToken,
     // expiresInMinutes } — userId/role/fullName/email get derived by
     // decoding the JWT's claims client-side, not attached directly like
     // this. Faking a JWT here would just be busywork with no payoff

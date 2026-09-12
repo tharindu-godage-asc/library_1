@@ -1,8 +1,66 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_radius.dart';
 import '../theme/app_text_styles.dart';
+
+class BookActionSuccessSheet {
+  const BookActionSuccessSheet._();
+
+  static void show(
+    BuildContext context, {
+    required String title,
+    required String heading,
+    required String message,
+    required String dateLabel,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => _AutoDismiss(
+        child: BookActionSuccessSnackBar(
+          title: title,
+          heading: heading,
+          message: message,
+          dateLabel: dateLabel,
+        ),
+      ),
+    );
+  }
+}
+
+class _AutoDismiss extends StatefulWidget {
+  const _AutoDismiss({required this.child});
+  final Widget child;
+
+  @override
+  State<_AutoDismiss> createState() => _AutoDismissState();
+}
+
+class _AutoDismissState extends State<_AutoDismiss> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (mounted) Navigator.of(context).pop();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 class BookActionSuccessSnackBar extends StatelessWidget {
   const BookActionSuccessSnackBar({
@@ -23,10 +81,12 @@ class BookActionSuccessSnackBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFFFF8EC),
-        border: Border.all(color: AppColors.primary, width: 2),
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.lg),
+          topRight: Radius.circular(AppRadius.lg),
+        ),
       ),
-      padding: const EdgeInsets.fromLTRB(18, 12, 18, 14),
+      padding: EdgeInsets.fromLTRB(18, 12, 18, 14 + MediaQuery.paddingOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -46,8 +106,7 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                   child: IconButton(
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
-                    onPressed: () =>
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                    onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close, size: 22),
                     tooltip: 'Close',
                   ),
@@ -107,8 +166,7 @@ class BookActionSuccessSnackBar extends StatelessWidget {
             width: double.infinity,
             height: 42,
             child: ElevatedButton(
-              onPressed: () =>
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+              onPressed: () => Navigator.of(context).pop(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.textOnPrimary,

@@ -12,9 +12,7 @@ abstract class BorrowingLocalDataSource {
 class BorrowingLocalDataSourceImpl implements BorrowingLocalDataSource {
   BorrowingLocalDataSourceImpl() {
     final now = DateTime.now();
-    // Seeded against the same member (u2 / Amaya) and books already
-    // showing reduced availableCopies in BookLocalDataSourceImpl —
-    // br1/br2 keep those numbers meaningful instead of decorative.
+
     _borrowings.addAll([
       {
         'id': 'br1', 'bookId': 'b1', 'memberId': 'u2',
@@ -42,9 +40,6 @@ class BorrowingLocalDataSourceImpl implements BorrowingLocalDataSource {
   final List<Map<String, dynamic>> _borrowings = [];
   int _nextId = 4;
 
-  /// Mirrors what a real backend would compute server-side: a Borrowed
-  /// record whose dueDate has passed (and hasn't been returned) reads as
-  /// Overdue, without needing a scheduled job to rewrite stored status.
   BorrowingModel _withEffectiveStatus(BorrowingModel m) {
     if (m.status == BorrowingStatus.returned) return m;
     final isOverdue = DateTime.now().isAfter(m.dueDate);

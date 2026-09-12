@@ -10,16 +10,7 @@ abstract class BookLocalDataSource {
 }
 
 /// Reads from the bundled assets/data/books.json — stands in for a real
-/// HTTP client. Data is built via fromJson from the decoded JSON, not a
-/// convenient Dart object, so swapping this for a real ApiBookDataSource
-/// later is an implementation swap, not a rewrite.
-///
-/// The decoded rows are cached in [_books] after the first load rather
-/// than re-read from the asset on every call: once updateBook() can
-/// mutate availableCopies, re-reading the asset would silently discard
-/// every borrow/return by reloading the pristine seed data. This is also
-/// why bookLocalDataSourceProvider is `keepAlive` — a fresh instance
-/// would lose this cache and reset every book back to its seeded state.
+
 class BookLocalDataSourceImpl implements BookLocalDataSource {
   List<Map<String, dynamic>>? _books;
 
