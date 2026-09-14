@@ -4,6 +4,7 @@ import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/book.dart';
+import 'book_cover_image.dart';
 
 /// A book cover + title/author card used in the Books screen's horizontal
 /// shelves.
@@ -45,10 +46,7 @@ class BookVerticalCard extends StatelessWidget {
             children: [
               AspectRatio(
                 aspectRatio: AppDimens.bookCoverAspectRatio,
-                child: Container(
-                  color: AppColors.surfaceAlt,
-                  child: const Icon(Icons.menu_book_outlined, color: AppColors.textSecondary),
-                ),
+                child: BookCoverImage(book: book),
               ),
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.sm),
