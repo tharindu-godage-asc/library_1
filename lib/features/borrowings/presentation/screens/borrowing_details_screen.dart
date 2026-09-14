@@ -49,6 +49,7 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                   final returnedBorrowing = next.value!;
                   BookActionSuccessSheet.show(
                     context,
+                    book: book,
                     title: book.title,
                     heading: 'Book Returned!',
                     message: 'Thanks for returning ${book.title}.\nIt\'s back on the shelf for the next reader.',

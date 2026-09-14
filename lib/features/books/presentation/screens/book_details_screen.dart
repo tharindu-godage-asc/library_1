@@ -32,13 +32,14 @@ class BookDetailsScreen extends ConsumerWidget {
 
     ref.listen(borrowActionControllerProvider, (previous, next) {
       final borrowing = next.value;
-      if (borrowing != null) {
-        final title = asyncBook.asData?.value.title ?? 'The book';
+      final book = asyncBook.asData?.value;
+      if (borrowing != null && book != null) {
         BookActionSuccessSheet.show(
           context,
-          title: title,
+          book: book,
+          title: book.title,
           heading: 'Book Borrowed!',
-          message: '$title is now yours. Bring it back by the\ndue date below.',
+          message: '${book.title} is now yours. Bring it back by the\ndue date below.',
           dateLabel: 'Due ${formatShortDate(borrowing.dueDate)}',
         );
       }
