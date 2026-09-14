@@ -8,4 +8,8 @@ class AppSpacing {
   static const lg = 16.0;
   static const xl = 24.0;
   static const xxl = 32.0;
+
+  /// Standard horizontal screen-content margin (matches
+  /// AppGradientScaffold's default padding).
+  static const screenHorizontal = 20.0;
 }

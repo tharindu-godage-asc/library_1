@@ -8,6 +8,7 @@ class Book {
     required this.totalCopies,
     required this.availableCopies,
     this.description,
+    this.imageUrl,
   });
 
   /// Default fallback state for initializations or tests
@@ -20,6 +21,7 @@ class Book {
         totalCopies: 0,
         availableCopies: 0,
         description: null,
+        imageUrl: null,
       );
 
   final String id;
@@ -30,6 +32,9 @@ class Book {
   final int totalCopies;
   final int availableCopies;
   final String? description;
+
+  /// Cover image URL; null falls back to the placeholder icon in the UI.
+  final String? imageUrl;
 
   /// Business logic getter
   bool get isAvailable => availableCopies > 0;
@@ -44,6 +49,7 @@ class Book {
     int? totalCopies,
     int? availableCopies,
     String? description,
+    String? imageUrl,
   }) {
     return Book(
       id: id ?? this.id,
@@ -54,6 +60,7 @@ class Book {
       totalCopies: totalCopies ?? this.totalCopies,
       availableCopies: availableCopies ?? this.availableCopies,
       description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 

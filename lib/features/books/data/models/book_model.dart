@@ -10,6 +10,7 @@ class BookModel extends Book {
     required super.totalCopies,
     required super.availableCopies,
     super.description,
+    super.imageUrl,
   });
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class BookModel extends Book {
       totalCopies: json['totalCopies'] as int,
       availableCopies: json['availableCopies'] as int,
       description: json['description'] as String?,
+      imageUrl: json['image'] as String?,
     );
   }
 
@@ -34,6 +36,7 @@ class BookModel extends Book {
         'totalCopies': totalCopies,
         'availableCopies': availableCopies,
         'description': description,
+        'image': imageUrl,
       };
 
   Book toEntity() => Book(
@@ -45,12 +48,14 @@ class BookModel extends Book {
         totalCopies: totalCopies,
         availableCopies: availableCopies,
         description: description,
+        imageUrl: imageUrl,
       );
 
     factory BookModel.fromEntity(Book book) => BookModel(
         id: book.id, title: book.title, author: book.author, isbn: book.isbn,
         publishedYear: book.publishedYear, totalCopies: book.totalCopies,
         availableCopies: book.availableCopies, description: book.description,
+        imageUrl: book.imageUrl,
       );
 }
 

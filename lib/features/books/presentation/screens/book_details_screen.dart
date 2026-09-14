@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/widgets/error_state_view.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -19,6 +18,7 @@ import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../borrowings/presentation/providers/borrowing_providers.dart';
 import '../../domain/entities/book.dart';
 import '../providers/book_providers.dart';
+import '../widgets/book_cover_image.dart';
 
 class BookDetailsScreen extends ConsumerWidget {
   const BookDetailsScreen({super.key, required this.bookId});
@@ -72,13 +72,9 @@ class BookDetailsScreen extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Container(
-            width: 140,
-            height: 190,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceAlt,
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            child: SizedBox(width: 140, height: 190, child: BookCoverImage(book: book)),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(

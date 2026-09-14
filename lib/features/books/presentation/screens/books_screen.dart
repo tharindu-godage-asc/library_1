@@ -11,7 +11,7 @@ import '../../../../core/widgets/app_state_views.dart';
 import '../../domain/entities/book.dart';
 import '../providers/book_providers.dart';
 import '../widgets/book_card.dart';
-import '../widgets/book_vertical_card.dart';
+import '../widgets/book_shelf.dart';
 import '../widgets/reminder_banner.dart';
 import '../../../borrowings/domain/entities/borrowing.dart';
 import '../../../borrowings/presentation/providers/borrowing_providers.dart';
@@ -60,7 +60,10 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
     final asyncBooks = ref.watch(bookListProvider);
 
     return AppGradientScaffold(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      // No horizontal inset here — the two book shelves need to scroll
+      // edge-to-edge (see BookShelf's doc comment). Everything else applies
+      // AppSpacing.screenHorizontal itself, section by section, below.
+      padding: const EdgeInsets.only(top: AppSpacing.screenHorizontal),
       body: asyncBooks.when(
         loading: () => const LoadingView(),
         error: (err, stack) => ErrorStateView(
@@ -90,97 +93,110 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
     final recommended = books.reversed.take(10).toList();
     final newestPicks = _newestPicks(books);
 
+    // Applied per-section (instead of once around the whole screen) so the
+    // two BookShelf sections below can be left unpadded and scroll to the
+    // true screen edge — see BookShelf's doc comment for why.
+    const contentPadding = EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Good Evening', style: AppTextStyles.bodyMd),
-                    Text(asyncProfile.value?.fullName ?? '', style: AppTextStyles.headingLg),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () => context.push('/home/notifications'),
-                  child: Container(
-                    width: 44, height: 44,
-                    decoration: const BoxDecoration(color: AppColors.surfaceAlt, shape: BoxShape.circle),
-                    child: const Icon(Icons.notifications_none, color: AppColors.textPrimary),
+            Padding(
+              padding: contentPadding,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Good Evening', style: AppTextStyles.bodyMd),
+                      Text(asyncProfile.value?.fullName ?? '', style: AppTextStyles.headingLg),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            AppSearchField(
-              controller: _searchController,
-              hintText: 'Search books...',
-              onChanged: (v) => setState(() => _query = v),
-            ),
-            if (_query.trim().isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.lg),
-              ...matches.take(3).map(
-                    (book) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      child: BookCard(book: book, onTap: () => _openBook(book.id)),
+                  GestureDetector(
+                    onTap: () => context.push('/home/notifications'),
+                    child: Container(
+                      width: 44, height: 44,
+                      decoration: const BoxDecoration(color: AppColors.surfaceAlt, shape: BoxShape.circle),
+                      child: const Icon(Icons.notifications_none, color: AppColors.textPrimary),
                     ),
                   ),
-              if (matches.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-                  child: Text('No books match your search.', style: AppTextStyles.bodyMd),
-                )
-              else
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(onPressed: _openSearchResults, child: const Text('See All')),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Padding(
+              padding: contentPadding,
+              child: AppSearchField(
+                controller: _searchController,
+                hintText: 'Search books...',
+                onChanged: (v) => setState(() => _query = v),
+              ),
+            ),
+            if (_query.trim().isNotEmpty)
+              Padding(
+                padding: contentPadding,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppSpacing.lg),
+                    ...matches.take(3).map(
+                          (book) => Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                            child: BookCard(book: book, onTap: () => _openBook(book.id)),
+                          ),
+                        ),
+                    if (matches.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        child: Text('No books match your search.', style: AppTextStyles.bodyMd),
+                      )
+                    else
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(onPressed: _openSearchResults, child: const Text('See All')),
+                      ),
+                  ],
                 ),
-            ],
+              ),
             if (newestPicks.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.xl),
-              _SectionHeader(title: 'Newest Picks', onSeeAll: () => _todo('Newest Picks')),
+              Padding(
+                padding: contentPadding,
+                child: _SectionHeader(title: 'Newest Picks', onSeeAll: () => _todo('Newest Picks')),
+              ),
               const SizedBox(height: AppSpacing.md),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: newestPicks.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
-                  itemBuilder: (context, i) {
-                    final book = newestPicks[i];
-                    return BookVerticalCard(book: book, onTap: () => _openBook(book.id));
-                  },
-                ),
+              BookShelf(
+                books: newestPicks,
+                onTapBook: (book) => _openBook(book.id),
+                edgeInset: AppSpacing.screenHorizontal,
               ),
             ],
             if (soonestDue != null) ...[
               const SizedBox(height: AppSpacing.lg),
-              ReminderBanner(
-                bookTitle: soonestDue.bookTitle,
-                dueInDays: soonestDue.dueInDays,
-                onReturn: () => context.push('/home/borrowings/${soonestDue.borrowingId}'),
+              Padding(
+                padding: contentPadding,
+                child: ReminderBanner(
+                  bookTitle: soonestDue.bookTitle,
+                  dueInDays: soonestDue.dueInDays,
+                  onReturn: () => context.push('/home/borrowings/${soonestDue.borrowingId}'),
+                ),
               ),
             ],
             if (recommended.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.xl),
-              _SectionHeader(title: 'Recommended for You', onSeeAll: () => _todo('Recommendations')),
+              Padding(
+                padding: contentPadding,
+                child: _SectionHeader(title: 'Recommended for You', onSeeAll: () => _todo('Recommendations')),
+              ),
               const SizedBox(height: AppSpacing.md),
-              SizedBox(
-                height: 180,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: recommended.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
-                  itemBuilder: (context, i) => BookVerticalCard(
-                    book: recommended[i],
-                    onTap: () => _openBook(recommended[i].id),
-                  ),
-                ),
+              BookShelf(
+                books: recommended,
+                onTapBook: (book) => _openBook(book.id),
+                edgeInset: AppSpacing.screenHorizontal,
               ),
             ],
           ],

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../domain/entities/book.dart';
+import 'book_cover_image.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({super.key, required this.book, required this.onTap});
@@ -22,13 +22,9 @@ class BookCard extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              Container(
-                width: 44,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceAlt,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                child: SizedBox(width: 44, height: 60, child: BookCoverImage(book: book)),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(

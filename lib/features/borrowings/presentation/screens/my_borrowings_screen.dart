@@ -12,6 +12,7 @@ import '../../../../core/widgets/illustrated_state_view.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../../books/domain/entities/book.dart';
 import '../../../books/presentation/providers/book_providers.dart';
+import '../../../books/presentation/widgets/book_cover_image.dart';
 import '../../domain/entities/borrowing.dart';
 import '../providers/borrowing_providers.dart';
 import '../../../../core/utils/date_formatting.dart';
@@ -78,7 +79,7 @@ class _MyBorrowingsScreenState extends ConsumerState<MyBorrowingsScreen> {
                                 final book = _findBook(books, borrowing.bookId);
                                 return _BorrowingRow(
                                   borrowing: borrowing,
-                                  bookTitle: book?.title ?? 'Unknown book',
+                                  book: book,
                                   onTap: () => context.push('/home/borrowings/${borrowing.id}'),
                                 );
                               },
@@ -192,10 +193,12 @@ class _TabSegment extends StatelessWidget {
 }
 
 class _BorrowingRow extends StatelessWidget {
-  const _BorrowingRow({required this.borrowing, required this.bookTitle, required this.onTap});
+  const _BorrowingRow({required this.borrowing, required this.book, required this.onTap});
   final Borrowing borrowing;
-  final String bookTitle;
+  final Book? book;
   final VoidCallback onTap;
+
+  String get _bookTitle => book?.title ?? 'Unknown book';
 
   BadgeStatus get _badgeStatus => switch (borrowing.status) {
         BorrowingStatus.borrowed => BadgeStatus.borrowed,
@@ -220,16 +223,16 @@ String get _subtitle {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              Container(
-                width: 44, height: 60,
-                decoration: BoxDecoration(color: AppColors.surfaceAlt, borderRadius: BorderRadius.circular(AppRadius.sm)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                child: SizedBox(width: 44, height: 60, child: BookCoverImage(book: book ?? Book.empty())),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(bookTitle, style: AppTextStyles.bodyLg, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(_bookTitle, style: AppTextStyles.bodyLg, maxLines: 1, overflow: TextOverflow.ellipsis),
                     Text(_subtitle, style: AppTextStyles.caption),
                   ],
                 ),
