@@ -25,11 +25,7 @@ class BooksScreen extends ConsumerStatefulWidget {
 }
 
 class _BooksScreenState extends ConsumerState<BooksScreen> {
-  // Search text is screen-local UI state — nothing else in the app needs
-  // to observe it, so it stays plain State instead of becoming a
-  // provider. Contrast with the book list below, which is genuinely app
-  // state (fetched, worth caching, shared across screens) and lives in
-  // bookListProvider instead. Not everything needs to go through Riverpod.
+
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
 
