@@ -42,7 +42,9 @@ class AuthRepositoryImpl implements AuthRepository {
         phoneNumber: phoneNumber,
         password: password,
       );
-      return Right(model.toEntity());
+      final session = model.toEntity();
+      await _sessionStorage.save(session);
+      return Right(session);
     } on EmailAlreadyExistsException catch (e) {
       return Left(EmailAlreadyExistsFailure(e.message));
     } catch (e) {
@@ -54,6 +56,25 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, AuthSession?>> restoreSession() async {
     try {
       return Right(await _sessionStorage.read());
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AuthSession>> refreshSession() async {
+    try {
+      final current = await _sessionStorage.read();
+      if (current == null) {
+        return const Left(InvalidRefreshTokenFailure('No active session to refresh.'));
+      }
+      final model = await _dataSource.refresh(refreshToken: current.refreshToken);
+      final session = model.toEntity();
+      await _sessionStorage.save(session);
+      return Right(session);
+    } on InvalidRefreshTokenException catch (e) {
+      await _sessionStorage.clear(); // don't leave a dead/rotated token lying around
+      return Left(InvalidRefreshTokenFailure(e.message));
     } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }

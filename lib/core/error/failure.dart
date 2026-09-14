@@ -23,6 +23,10 @@ class EmailAlreadyExistsFailure extends Failure {
   const EmailAlreadyExistsFailure(super.message);
 }
 
+class InvalidRefreshTokenFailure extends Failure {
+  const InvalidRefreshTokenFailure(super.message);
+}
+
 class BookUnavailableFailure extends Failure {
   const BookUnavailableFailure(super.message);
 }

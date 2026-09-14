@@ -47,6 +47,7 @@ AppErrorType appErrorTypeFrom(Failure failure) => switch (failure) {
       BorrowingLimitExceededFailure() ||
       AlreadyReturnedFailure() ||
       InvalidCredentialsFailure() ||
-      EmailAlreadyExistsFailure() =>
+      EmailAlreadyExistsFailure() ||
+      InvalidRefreshTokenFailure() =>
         BusinessRuleErrorType(failure.message),
     };

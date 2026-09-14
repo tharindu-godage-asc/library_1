@@ -103,12 +103,15 @@ docs/              one dated write-up per phase: objective, what was built,
   `publishedYear`). Wrap these in dedicated value objects (e.g. `Isbn`,
   `BookId`) that validate on construction, instead of trusting every caller
   to pass a well-formed primitive.
-- **`register()` doesn't persist a session** — `AuthRepositoryImpl.login()`
-  saves to secure storage, `register()` doesn't, so a newly registered
-  account doesn't survive a cold start (see
-  [`docs/phase-04-session-persistence.md`](docs/phase-04-session-persistence.md)).
-- No real token handling — `expiresInMinutes` is never checked or acted on
-  (no auto-logout on expiry, no refresh).
+- ~~**`register()` doesn't persist a session**~~ — fixed: `register()` now
+  saves to secure storage just like `login()` (see
+  [`docs/phase-04-session-persistence.md`](docs/phase-04-session-persistence.md)
+  for the original gap).
+- ~~No real token handling~~ — fixed: sessions now carry a 60-minute access
+  token and a 7-day rotating refresh token with real absolute expiries.
+  `AuthController` silently refreshes the access token shortly before it
+  expires and forces logout once the refresh token itself expires or is
+  rejected. Still mock-only — no real backend issues these tokens.
 - **Deep linking isn't wired up** — no Android `intent-filter` / iOS
   `CFBundleURLTypes` exists, so go_router's path-based routes aren't
   reachable from outside the app. Attempted and reverted in
