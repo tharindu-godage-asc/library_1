@@ -27,8 +27,9 @@ class BookCoverImage extends StatelessWidget {
               final targetWidthPx = constraints.maxWidth.isFinite
                   ? (constraints.maxWidth * MediaQuery.devicePixelRatioOf(context)).round()
                   : null;
+              final optimizedUrl = targetWidthPx == null ? url : _sizedUrl(url, targetWidthPx);
               return Image.network(
-                targetWidthPx == null ? url : _sizedUrl(url, targetWidthPx),
+                optimizedUrl,
                 fit: BoxFit.cover,
                 cacheWidth: targetWidthPx,
                 frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
