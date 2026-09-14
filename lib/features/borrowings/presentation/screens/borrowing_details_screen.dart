@@ -53,9 +53,8 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                     title: book.title,
                     heading: 'Book Returned!',
                     message: 'Thanks for returning ${book.title}.\nIt\'s back on the shelf for the next reader.',
-                    dateLabel: returnedBorrowing.returnedDate == null
-                        ? 'Returned today'
-                        : formatReturnedLabel(returnedBorrowing.returnedDate!),
+                    borrowedDate: returnedBorrowing.borrowedDate,
+                    returnDate: returnedBorrowing.returnedDate ?? DateTime.now(),
                   );
                 }
               });

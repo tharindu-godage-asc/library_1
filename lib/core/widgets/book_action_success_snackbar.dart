@@ -7,6 +7,7 @@ import '../../features/books/presentation/widgets/book_cover_image.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radius.dart';
 import '../theme/app_text_styles.dart';
+import '../utils/date_formatting.dart';
 
 class BookActionSuccessSheet {
   const BookActionSuccessSheet._();
@@ -17,7 +18,8 @@ class BookActionSuccessSheet {
     required String title,
     required String heading,
     required String message,
-    required String dateLabel,
+    required DateTime borrowedDate,
+    required DateTime returnDate,
   }) {
     showModalBottomSheet<void>(
       context: context,
@@ -30,7 +32,8 @@ class BookActionSuccessSheet {
           title: title,
           heading: heading,
           message: message,
-          dateLabel: dateLabel,
+          borrowedDate: borrowedDate,
+          returnDate: returnDate,
         ),
       ),
     );
@@ -73,14 +76,16 @@ class BookActionSuccessSnackBar extends StatelessWidget {
     required this.title,
     required this.heading,
     required this.message,
-    required this.dateLabel,
+    required this.borrowedDate,
+    required this.returnDate,
   });
 
   final Book book;
   final String title;
   final String heading;
   final String message;
-  final String dateLabel;
+  final DateTime borrowedDate;
+  final DateTime returnDate;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +124,6 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Container(
-                      height: 68,
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceAlt,
@@ -128,10 +132,10 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                       child: Row(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
                             child: SizedBox(
-                              width: 38,
-                              height: 52,
+                              width: MediaQuery.sizeOf(context).height * 0.25 * 38 / 52,
+                              height: MediaQuery.sizeOf(context).height * 0.25,
                               child: BookCoverImage(book: book),
                             ),
                           ),
@@ -141,14 +145,17 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(title, style: AppTextStyles.label),
+                                const SizedBox(height: 4),
                                 Text(
-                                  title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: AppTextStyles.label,
+                                  'Borrowed Date: ${formatShortDate(borrowedDate)}',
+                                  style: AppTextStyles.caption,
                                 ),
                                 const SizedBox(height: 2),
-                                Text(dateLabel, style: AppTextStyles.caption),
+                                Text(
+                                  'Return Date: ${formatShortDate(returnDate)}',
+                                  style: AppTextStyles.caption,
+                                ),
                               ],
                             ),
                           ),

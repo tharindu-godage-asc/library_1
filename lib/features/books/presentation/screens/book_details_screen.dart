@@ -40,7 +40,8 @@ class BookDetailsScreen extends ConsumerWidget {
           title: book.title,
           heading: 'Book Borrowed!',
           message: '${book.title} is now yours. Bring it back by the\ndue date below.',
-          dateLabel: 'Due ${formatShortDate(borrowing.dueDate)}',
+          borrowedDate: borrowing.borrowedDate,
+          returnDate: borrowing.dueDate,
         );
       }
       if (next.hasError) {
