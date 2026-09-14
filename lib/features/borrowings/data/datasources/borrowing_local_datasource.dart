@@ -15,20 +15,22 @@ class BorrowingLocalDataSourceImpl implements BorrowingLocalDataSource {
 
     _borrowings.addAll([
       {
-        'id': 'br1', 'bookId': 'b1', 'memberId': 'u2',
+        // Clean Code, due soon — surfaces the Books home screen's reminder banner
+        'id': 'br1', 'bookId': '1', 'memberId': 'u2',
         'borrowedDate': now.subtract(const Duration(days: 12)),
         'dueDate': now.add(const Duration(days: 2)),
         'returnedDate': null, 'status': BorrowingStatus.borrowed,
       },
       {
-        // dueDate already in the past — recomputed to Overdue at fetch time
-        'id': 'br2', 'bookId': 'b5', 'memberId': 'u2',
+        // Domain-Driven Design, dueDate already in the past — recomputed to Overdue at fetch time
+        'id': 'br2', 'bookId': '5', 'memberId': 'u2',
         'borrowedDate': now.subtract(const Duration(days: 16)),
         'dueDate': now.subtract(const Duration(days: 2)),
         'returnedDate': null, 'status': BorrowingStatus.borrowed,
       },
       {
-        'id': 'br3', 'bookId': 'b3', 'memberId': 'u2',
+        // Design Patterns, already returned
+        'id': 'br3', 'bookId': '3', 'memberId': 'u2',
         'borrowedDate': now.subtract(const Duration(days: 30)),
         'dueDate': now.subtract(const Duration(days: 16)),
         'returnedDate': now.subtract(const Duration(days: 20)),

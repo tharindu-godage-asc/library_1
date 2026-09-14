@@ -13,12 +13,12 @@ class ReminderBanner extends StatelessWidget {
     super.key,
     required this.bookTitle,
     required this.dueInDays,
-    required this.onRenew,
+    required this.onReturn,
   });
 
   final String bookTitle;
   final int dueInDays;
-  final VoidCallback onRenew;
+  final VoidCallback onReturn;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class ReminderBanner extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.sm),
           ElevatedButton(
-            onPressed: onRenew,
+            onPressed: onReturn,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.textPrimary,
               foregroundColor: Colors.white,
@@ -56,7 +56,7 @@ class ReminderBanner extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
               elevation: 0,
             ),
-            child: const Text('Renew'),
+            child: const Text('Return'),
           ),
         ],
       ),

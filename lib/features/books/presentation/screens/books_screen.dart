@@ -167,7 +167,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
               ReminderBanner(
                 bookTitle: soonestDue.bookTitle,
                 dueInDays: soonestDue.dueInDays,
-                onRenew: () => _todo('Renew'),
+                onReturn: () => context.push('/home/borrowings/${soonestDue.borrowingId}'),
               ),
             ],
             if (recommended.isNotEmpty) ...[
@@ -200,7 +200,11 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
     final daysLeft = soonest.dueDate.difference(DateTime.now()).inDays;
     if (daysLeft > 3) return null; // only surface the reminder when it's actually close
     final book = _findBook(books, soonest.bookId);
-    return _DueSoon(bookTitle: book?.title ?? 'A book', dueInDays: daysLeft);
+    return _DueSoon(
+      borrowingId: soonest.id,
+      bookTitle: book?.title ?? 'A book',
+      dueInDays: daysLeft,
+    );
   }
 
   Book? _findBook(List<Book> books, String id) {
@@ -217,7 +221,8 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
 }
 
 class _DueSoon {
-  const _DueSoon({required this.bookTitle, required this.dueInDays});
+  const _DueSoon({required this.borrowingId, required this.bookTitle, required this.dueInDays});
+  final String borrowingId;
   final String bookTitle;
   final int dueInDays;
 }
