@@ -36,6 +36,9 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
 
   String? _coverReadyKey; // book.imageUrl already precached
   String? _precachingKey; // book.imageUrl currently being precached
+  bool _justBorrowed = false; // set the instant a borrow succeeds, so the
+  // button can't flash back to enabled "Borrow" while myBorrowingsProvider
+  // is still refetching or the success sheet is still on screen.
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +51,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
       final borrowing = next.value;
       final book = asyncBook.asData?.value;
       if (borrowing != null && book != null) {
+        setState(() => _justBorrowed = true);
         unawaited(BookActionSuccessSheet.show(
           context,
           book: book,
@@ -78,9 +82,10 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
           if (book.imageUrl != null && _coverReadyKey != book.imageUrl) {
             return const LoadingView();
           }
-          final alreadyBorrowed = myBorrowings.any(
-            (b) => b.bookId == book.id && b.status != BorrowingStatus.returned,
-          );
+          final alreadyBorrowed = _justBorrowed ||
+              myBorrowings.any(
+                (b) => b.bookId == book.id && b.status != BorrowingStatus.returned,
+              );
           return _buildContent(
             context,
             ref,
