@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 
 /// Wraps a screen body in the cream-to-lilac gradient background seen
 /// across every mockup, plus optional app bar and bottom nav slots.
@@ -9,7 +10,7 @@ class AppGradientScaffold extends StatelessWidget {
     required this.body,
     this.appBar,
     this.bottomNavigationBar,
-    this.padding = const EdgeInsets.all(20),
+    this.padding = const EdgeInsets.all(AppSpacing.screenHorizontal),
   });
 
   final Widget body;

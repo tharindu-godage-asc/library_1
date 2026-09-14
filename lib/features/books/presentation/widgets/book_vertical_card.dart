@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/book.dart';
+import 'book_cover_image.dart';
 
+/// A book cover + title/author card used in the Books screen's horizontal
+/// shelves.
+///
+/// Sizes itself from [AppDimens.bookCardWidth] and its own content height
+/// (no fixed outer height) so text is never clipped at larger system font
+/// scales, and the card scales between phone and tablet/landscape widths.
 class BookVerticalCard extends StatelessWidget {
   const BookVerticalCard({
     super.key,
@@ -18,22 +26,27 @@ class BookVerticalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaler = MediaQuery.textScalerOf(context);
+    // Reserved regardless of actual line count, so a short title/author
+    // doesn't leave this card shorter than a sibling card in the same
+    // shelf whose title wraps to the full 2 lines.
+    final titleHeight = AppDimens.lineHeight(AppTextStyles.bodyMd, textScaler) * 2;
+    final authorHeight = AppDimens.lineHeight(AppTextStyles.caption, textScaler);
+
     return SizedBox(
-      width: 110,
+      width: AppDimens.bookCardWidth(context),
       child: Card(
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  color: AppColors.surfaceAlt,
-                  child: const Icon(Icons.menu_book_outlined, color: AppColors.textSecondary),
-                ),
+              AspectRatio(
+                aspectRatio: AppDimens.bookCoverAspectRatio,
+                child: BookCoverImage(book: book),
               ),
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.sm),
@@ -41,8 +54,14 @@ class BookVerticalCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(book.title, style: AppTextStyles.bodyMd, maxLines: 2, overflow: TextOverflow.ellipsis),
-                    Text(book.author, style: AppTextStyles.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    SizedBox(
+                      height: titleHeight,
+                      child: Text(book.title, style: AppTextStyles.bodyMd, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ),
+                    SizedBox(
+                      height: authorHeight,
+                      child: Text(book.author, style: AppTextStyles.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ),
                     if (dueInDays != null) ...[
                       const SizedBox(height: 2),
                       Row(

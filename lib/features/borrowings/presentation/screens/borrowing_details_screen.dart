@@ -12,6 +12,7 @@ import '../../../../core/widgets/app_state_views.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../../books/domain/entities/book.dart';
 import '../../../books/presentation/providers/book_providers.dart';
+import '../../../books/presentation/widgets/book_cover_image.dart';
 import '../../domain/entities/borrowing.dart';
 import '../providers/borrowing_providers.dart';
 import '../../../../core/utils/date_formatting.dart';
@@ -88,9 +89,9 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Row(
                   children: [
-                    Container(
-                      width: 44, height: 60,
-                      decoration: BoxDecoration(color: AppColors.surfaceAlt, borderRadius: BorderRadius.circular(AppRadius.sm)),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                      child: SizedBox(width: 44, height: 60, child: BookCoverImage(book: book)),
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
