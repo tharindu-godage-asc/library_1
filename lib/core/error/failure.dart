@@ -35,6 +35,10 @@ class BorrowingLimitExceededFailure extends Failure {
   const BorrowingLimitExceededFailure(super.message);
 }
 
+class AlreadyBorrowedFailure extends Failure {
+  const AlreadyBorrowedFailure(super.message);
+}
+
 class AlreadyReturnedFailure extends Failure {
   const AlreadyReturnedFailure(super.message);
 }

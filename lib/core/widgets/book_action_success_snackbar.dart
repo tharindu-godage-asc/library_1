@@ -12,7 +12,10 @@ import '../utils/date_formatting.dart';
 class BookActionSuccessSheet {
   const BookActionSuccessSheet._();
 
-  static void show(
+  /// Precaches the book's cover (at the size [BookActionSuccessSnackBar]
+  /// actually displays it) before opening the sheet, so the cover doesn't
+  /// pop in over the placeholder once the sheet is already visible.
+  static Future<void> show(
     BuildContext context, {
     required Book book,
     required String title,
@@ -20,7 +23,16 @@ class BookActionSuccessSheet {
     required String message,
     required DateTime borrowedDate,
     required DateTime returnDate,
-  }) {
+  }) async {
+    final (width, _) = _coverBoxSize(context);
+    await BookCoverImage.precache(
+      context,
+      book,
+      width: width,
+      timeout: const Duration(seconds: 2),
+    );
+    if (!context.mounted) return;
+
     showModalBottomSheet<void>(
       context: context,
       useRootNavigator: true,
@@ -38,6 +50,15 @@ class BookActionSuccessSheet {
       ),
     );
   }
+}
+
+/// Shared cover-box sizing for the sheet's cover image, used both when
+/// deciding what to [BookCoverImage.precache] and by
+/// [BookActionSuccessSnackBar] when it actually renders the cover, so the
+/// two can never drift apart.
+(double width, double height) _coverBoxSize(BuildContext context) {
+  final height = MediaQuery.sizeOf(context).height * 0.25;
+  return (height * 38 / 52, height);
 }
 
 class _AutoDismiss extends StatefulWidget {
@@ -90,6 +111,7 @@ class BookActionSuccessSnackBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sheetHeight = MediaQuery.sizeOf(context).height * 0.6;
+    final (coverWidth, coverHeight) = _coverBoxSize(context);
     return Stack(
       children: [
         SizedBox(
@@ -134,8 +156,8 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(AppRadius.sm),
                             child: SizedBox(
-                              width: MediaQuery.sizeOf(context).height * 0.25 * 38 / 52,
-                              height: MediaQuery.sizeOf(context).height * 0.25,
+                              width: coverWidth,
+                              height: coverHeight,
                               child: BookCoverImage(book: book),
                             ),
                           ),
