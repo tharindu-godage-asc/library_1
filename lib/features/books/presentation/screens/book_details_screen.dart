@@ -106,6 +106,10 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
     BookCoverImage.precache(context, book, width: _coverWidth).then((_) {
       if (!mounted) return;
       setState(() => _coverReadyKey = key);
+    }).catchError((Object error, StackTrace stack) {
+      if (!mounted) return;
+      _precachingKey = null;
+      debugPrint('Failed to precache book cover: $error');
     });
   }
 
