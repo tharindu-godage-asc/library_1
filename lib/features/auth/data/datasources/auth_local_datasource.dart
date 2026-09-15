@@ -11,9 +11,13 @@ abstract class AuthLocalDataSource {
     required String phoneNumber,
     required String password,
   });
+  Future<AuthSessionModel> refresh({required String refreshToken});
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
+  static const _accessTokenTtl = Duration(minutes: 60);
+  static const _refreshTokenTtl = Duration(days: 7);
+
   // Seeded so login can be tested without registering first.
   // password stored in plain text here ONLY because this is a throwaway
   // mock — a real datasource must never do this, obviously.
@@ -28,15 +32,29 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     },
   ];
 
-  AuthSessionModel _sessionFor(Map<String, dynamic> user) {
+  // refreshToken -> { userId, expiresAt }. Mirrors _users' loose Map style
+  // rather than a dedicated model, since this is mock-only bookkeeping.
+  final Map<String, Map<String, dynamic>> _refreshTokens = {};
+
+  AuthSessionModel _issueSession(Map<String, dynamic> user) {
     // -TODO(phase-18): a real backend returns only { accessToken,
     // expiresInMinutes } — userId/role/fullName/email get derived by
     // decoding the JWT's claims client-side, not attached directly like
     // this. Faking a JWT here would just be busywork with no payoff
     // until there's a real token to decode.
+    final now = DateTime.now();
+    // Timestamp-prefixed so a Random() collision can't silently clobber
+    // another user's still-active refresh token entry.
+    final refreshToken = 'mock-refresh-${now.microsecondsSinceEpoch}-${Random().nextInt(999999)}';
+    _refreshTokens[refreshToken] = {
+      'userId': user['userId'] as String,
+      'expiresAt': now.add(_refreshTokenTtl),
+    };
     return AuthSessionModel(
       accessToken: 'mock-token-${Random().nextInt(999999)}',
-      expiresInMinutes: 60,
+      accessTokenExpiresAt: now.add(_accessTokenTtl),
+      refreshToken: refreshToken,
+      refreshTokenExpiresAt: now.add(_refreshTokenTtl),
       userId: user['userId'] as String,
       role: user['role'] as UserRole,
       fullName: user['fullName'] as String,
@@ -53,7 +71,19 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     if (match.isEmpty) {
       throw const InvalidCredentialsException('Incorrect email or password.');
     }
-    return _sessionFor(match.first);
+    return _issueSession(match.first);
+  }
+
+  @override
+  Future<AuthSessionModel> refresh({required String refreshToken}) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final record = _refreshTokens[refreshToken];
+    if (record == null || DateTime.now().isAfter(record['expiresAt'] as DateTime)) {
+      throw const InvalidRefreshTokenException('Your session has expired. Please log in again.');
+    }
+    _refreshTokens.remove(refreshToken); // rotation: dead the instant it's redeemed
+    final user = _users.firstWhere((u) => u['userId'] == record['userId']);
+    return _issueSession(user);
   }
 
   @override
@@ -77,6 +107,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       'role': UserRole.member, // always Member — see repository interface note
     };
     _users.add(newUser);
-    return _sessionFor(newUser);
+    return _issueSession(newUser);
   }
 }

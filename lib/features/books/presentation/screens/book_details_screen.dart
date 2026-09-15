@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,32 +17,50 @@ import '../../../../core/widgets/book_action_success_snackbar.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../../auth/domain/entities/auth_session.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../borrowings/domain/entities/borrowing.dart';
 import '../../../borrowings/presentation/providers/borrowing_providers.dart';
 import '../../domain/entities/book.dart';
 import '../providers/book_providers.dart';
 import '../widgets/book_cover_image.dart';
 
-class BookDetailsScreen extends ConsumerWidget {
+class BookDetailsScreen extends ConsumerStatefulWidget {
   const BookDetailsScreen({super.key, required this.bookId});
   final String bookId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final asyncBook = ref.watch(bookByIdProvider(bookId));
+  ConsumerState<BookDetailsScreen> createState() => _BookDetailsScreenState();
+}
+
+class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
+  static const double _coverWidth = 140; // must match _buildContent's SizedBox
+
+  String? _coverReadyKey; // book.imageUrl already precached
+  String? _precachingKey; // book.imageUrl currently being precached
+  bool _justBorrowed = false; // set the instant a borrow succeeds, so the
+  // button can't flash back to enabled "Borrow" while myBorrowingsProvider
+  // is still refetching or the success sheet is still on screen.
+
+  @override
+  Widget build(BuildContext context) {
+    final asyncBook = ref.watch(bookByIdProvider(widget.bookId));
     final actionState = ref.watch(borrowActionControllerProvider);
     final session = ref.watch(authControllerProvider).value;
+    final myBorrowings = ref.watch(myBorrowingsProvider).value ?? const <Borrowing>[];
 
     ref.listen(borrowActionControllerProvider, (previous, next) {
       final borrowing = next.value;
-      if (borrowing != null) {
-        final title = asyncBook.asData?.value.title ?? 'The book';
-        BookActionSuccessSheet.show(
+      final book = asyncBook.asData?.value;
+      if (borrowing != null && book != null) {
+        setState(() => _justBorrowed = true);
+        unawaited(BookActionSuccessSheet.show(
           context,
-          title: title,
+          book: book,
+          title: book.title,
           heading: 'Book Borrowed!',
-          message: '$title is now yours. Bring it back by the\ndue date below.',
-          dateLabel: 'Due ${formatShortDate(borrowing.dueDate)}',
-        );
+          message: '${book.title} is now yours. Bring it back by the\ndue date below.',
+          borrowedDate: borrowing.borrowedDate,
+          returnDate: borrowing.dueDate,
+        ));
       }
       if (next.hasError) {
         ScaffoldMessenger.of(context)
@@ -51,15 +71,42 @@ class BookDetailsScreen extends ConsumerWidget {
     return AppGradientScaffold(
       appBar: AppBar(title: const Text('')),
       body: asyncBook.when(
+        skipLoadingOnReload: true,
         loading: () => const LoadingView(),
         error: (err, stack) => ErrorStateView(
           error: err,
-          onRetry: () => ref.invalidate(bookByIdProvider(bookId)),
+          onRetry: () => ref.invalidate(bookByIdProvider(widget.bookId)),
         ),
-        data: (book) =>
-            _buildContent(context, ref, book, actionState.isLoading, session),
+        data: (book) {
+          _ensureCoverPrecached(book);
+          if (book.imageUrl != null && _coverReadyKey != book.imageUrl) {
+            return const LoadingView();
+          }
+          final alreadyBorrowed = _justBorrowed ||
+              myBorrowings.any(
+                (b) => b.bookId == book.id && b.status != BorrowingStatus.returned,
+              );
+          return _buildContent(
+            context,
+            ref,
+            book,
+            actionState.isLoading,
+            session,
+            alreadyBorrowed,
+          );
+        },
       ),
     );
+  }
+
+  void _ensureCoverPrecached(Book book) {
+    final key = book.imageUrl;
+    if (key == null || _coverReadyKey == key || _precachingKey == key) return;
+    _precachingKey = key;
+    BookCoverImage.precache(context, book, width: _coverWidth).then((_) {
+      if (!mounted) return;
+      setState(() => _coverReadyKey = key);
+    });
   }
 
   Widget _buildContent(
@@ -68,13 +115,20 @@ class BookDetailsScreen extends ConsumerWidget {
     Book book,
     bool isBorrowing,
     AuthSession? session,
+    bool alreadyBorrowed,
   ) {
+    final buttonLabel = alreadyBorrowed
+        ? 'Already borrowed'
+        : book.isAvailable
+            ? 'Borrow'
+            : 'Currently unavailable';
+
     return SingleChildScrollView(
       child: Column(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.md),
-            child: SizedBox(width: 140, height: 190, child: BookCoverImage(book: book)),
+            child: SizedBox(width: _coverWidth, height: 190, child: BookCoverImage(book: book)),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
@@ -103,9 +157,9 @@ class BookDetailsScreen extends ConsumerWidget {
           ],
           const SizedBox(height: AppSpacing.xl),
           AppButton(
-            label: book.isAvailable ? 'Borrow' : 'Currently unavailable',
+            label: buttonLabel,
             isLoading: isBorrowing,
-            onPressed: book.isAvailable && !isBorrowing
+            onPressed: book.isAvailable && !isBorrowing && !alreadyBorrowed
                 ? () => _confirmAndBorrow(context, ref, book, session)
                 : null,
           ),

@@ -319,6 +319,48 @@ final class RestoreSessionUseCaseProvider
 String _$restoreSessionUseCaseHash() =>
     r'3ff6ae305fd9b2f1e8f123d842bc5aac600de7c8';
 
+@ProviderFor(refreshSessionUseCase)
+final refreshSessionUseCaseProvider = RefreshSessionUseCaseProvider._();
+
+final class RefreshSessionUseCaseProvider
+    extends $FunctionalProvider<RefreshSession, RefreshSession, RefreshSession>
+    with $Provider<RefreshSession> {
+  RefreshSessionUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'refreshSessionUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$refreshSessionUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<RefreshSession> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  RefreshSession create(Ref ref) {
+    return refreshSessionUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(RefreshSession value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<RefreshSession>(value),
+    );
+  }
+}
+
+String _$refreshSessionUseCaseHash() =>
+    r'53f5bd56a4ebcf5e7fe983828e85dc13722970fe';
+
 @ProviderFor(logoutUserUseCase)
 final logoutUserUseCaseProvider = LogoutUserUseCaseProvider._();
 
@@ -360,33 +402,11 @@ final class LogoutUserUseCaseProvider
 
 String _$logoutUserUseCaseHash() => r'4339d832fb3306241ebb26b2317dde9387e704d0';
 
-/// Holds the current session as an `AsyncValue<AuthSession?>`:
-///  - AsyncData(null)   -> signed out (the only state possible right now —
-///                          there's no persistence yet, so every cold
-///                          start begins here; that's next slice's job)
-///  - AsyncLoading()    -> a login/register call is in flight
-///  - AsyncData(session)-> signed in
-///  - AsyncError(...)   -> the last attempt failed; session is still null
-
 @ProviderFor(AuthController)
 final authControllerProvider = AuthControllerProvider._();
 
-/// Holds the current session as an `AsyncValue<AuthSession?>`:
-///  - AsyncData(null)   -> signed out (the only state possible right now —
-///                          there's no persistence yet, so every cold
-///                          start begins here; that's next slice's job)
-///  - AsyncLoading()    -> a login/register call is in flight
-///  - AsyncData(session)-> signed in
-///  - AsyncError(...)   -> the last attempt failed; session is still null
 final class AuthControllerProvider
     extends $AsyncNotifierProvider<AuthController, AuthSession?> {
-  /// Holds the current session as an `AsyncValue<AuthSession?>`:
-  ///  - AsyncData(null)   -> signed out (the only state possible right now —
-  ///                          there's no persistence yet, so every cold
-  ///                          start begins here; that's next slice's job)
-  ///  - AsyncLoading()    -> a login/register call is in flight
-  ///  - AsyncData(session)-> signed in
-  ///  - AsyncError(...)   -> the last attempt failed; session is still null
   AuthControllerProvider._()
     : super(
         from: null,
@@ -406,15 +426,7 @@ final class AuthControllerProvider
   AuthController create() => AuthController();
 }
 
-String _$authControllerHash() => r'f70a70544b2c9eefe28ba990914a68cc7a6c458c';
-
-/// Holds the current session as an `AsyncValue<AuthSession?>`:
-///  - AsyncData(null)   -> signed out (the only state possible right now —
-///                          there's no persistence yet, so every cold
-///                          start begins here; that's next slice's job)
-///  - AsyncLoading()    -> a login/register call is in flight
-///  - AsyncData(session)-> signed in
-///  - AsyncError(...)   -> the last attempt failed; session is still null
+String _$authControllerHash() => r'3482db713740b90cb9924c1450d56ec81d4c0b2e';
 
 abstract class _$AuthController extends $AsyncNotifier<AuthSession?> {
   FutureOr<AuthSession?> build();

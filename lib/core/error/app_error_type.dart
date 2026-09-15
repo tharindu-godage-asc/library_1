@@ -45,8 +45,10 @@ AppErrorType appErrorTypeFrom(Failure failure) => switch (failure) {
       MemberInactiveFailure() => const AccessDeniedErrorType(),
       BookUnavailableFailure() ||
       BorrowingLimitExceededFailure() ||
+      AlreadyBorrowedFailure() ||
       AlreadyReturnedFailure() ||
       InvalidCredentialsFailure() ||
-      EmailAlreadyExistsFailure() =>
+      EmailAlreadyExistsFailure() ||
+      InvalidRefreshTokenFailure() =>
         BusinessRuleErrorType(failure.message),
     };

@@ -50,6 +50,13 @@ class BorrowBook {
     borrowingsResult.match((f) => earlyFailure = f, (list) => existing = list);
     if (earlyFailure != null) return Left(earlyFailure!);
 
+    final alreadyHasThisBook = existing!.any(
+      (b) => b.bookId == bookId && b.status != BorrowingStatus.returned,
+    );
+    if (alreadyHasThisBook) {
+      return Left(AlreadyBorrowedFailure('You already have "${book!.title}" borrowed.'));
+    }
+
     final activeCount = existing!.where((b) => b.status != BorrowingStatus.returned).length;
     if (activeCount >= 3) {
       return const Left(BorrowingLimitExceededFailure('You already have 3 active borrowings.'));

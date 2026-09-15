@@ -181,30 +181,11 @@ final class GetBookByIdUseCaseProvider
 String _$getBookByIdUseCaseHash() =>
     r'9736b9250ea09876d047a7221f58e2a6907893a4';
 
-/// AsyncNotifier because it's the generated-code equivalent of the old
-/// FutureProvider — `build()` runs once, result is cached, and
-/// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
-/// outside) re-runs it. `.match()` unwraps the Either right here so
-/// nothing downstream has to think about Left/Right — the UI only ever
-/// sees a plain `AsyncValue<List<Book>>`, same as before this change.
-
 @ProviderFor(BookList)
 final bookListProvider = BookListProvider._();
 
-/// AsyncNotifier because it's the generated-code equivalent of the old
-/// FutureProvider — `build()` runs once, result is cached, and
-/// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
-/// outside) re-runs it. `.match()` unwraps the Either right here so
-/// nothing downstream has to think about Left/Right — the UI only ever
-/// sees a plain `AsyncValue<List<Book>>`, same as before this change.
 final class BookListProvider
     extends $AsyncNotifierProvider<BookList, List<Book>> {
-  /// AsyncNotifier because it's the generated-code equivalent of the old
-  /// FutureProvider — `build()` runs once, result is cached, and
-  /// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
-  /// outside) re-runs it. `.match()` unwraps the Either right here so
-  /// nothing downstream has to think about Left/Right — the UI only ever
-  /// sees a plain `AsyncValue<List<Book>>`, same as before this change.
   BookListProvider._()
     : super(
         from: null,
@@ -225,13 +206,6 @@ final class BookListProvider
 }
 
 String _$bookListHash() => r'00ddc8b670b783cf7a05c2fd2d326bfa8c73d048';
-
-/// AsyncNotifier because it's the generated-code equivalent of the old
-/// FutureProvider — `build()` runs once, result is cached, and
-/// `ref.invalidateSelf()` (or `ref.invalidate(bookListProvider)` from
-/// outside) re-runs it. `.match()` unwraps the Either right here so
-/// nothing downstream has to think about Left/Right — the UI only ever
-/// sees a plain `AsyncValue<List<Book>>`, same as before this change.
 
 abstract class _$BookList extends $AsyncNotifier<List<Book>> {
   FutureOr<List<Book>> build();

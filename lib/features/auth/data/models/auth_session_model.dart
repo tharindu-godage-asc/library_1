@@ -3,7 +3,9 @@ import '../../domain/entities/auth_session.dart';
 class AuthSessionModel {
   const AuthSessionModel({
     required this.accessToken,
-    required this.expiresInMinutes,
+    required this.accessTokenExpiresAt,
+    required this.refreshToken,
+    required this.refreshTokenExpiresAt,
     required this.userId,
     required this.role,
     required this.fullName,
@@ -11,7 +13,9 @@ class AuthSessionModel {
   });
 
   final String accessToken;
-  final int expiresInMinutes;
+  final DateTime accessTokenExpiresAt;
+  final String refreshToken;
+  final DateTime refreshTokenExpiresAt;
   final String userId;
   final UserRole role;
   final String fullName;
@@ -19,7 +23,9 @@ class AuthSessionModel {
 
   factory AuthSessionModel.fromJson(Map<String, dynamic> json) => AuthSessionModel(
         accessToken: json['accessToken'] as String,
-        expiresInMinutes: json['expiresInMinutes'] as int,
+        accessTokenExpiresAt: DateTime.parse(json['accessTokenExpiresAt'] as String),
+        refreshToken: json['refreshToken'] as String,
+        refreshTokenExpiresAt: DateTime.parse(json['refreshTokenExpiresAt'] as String),
         userId: json['userId'] as String,
         role: _parseRole(json['role']),
         fullName: json['fullName'] as String,
@@ -28,7 +34,9 @@ class AuthSessionModel {
 
   Map<String, dynamic> toJson() => {
         'accessToken': accessToken,
-        'expiresInMinutes': expiresInMinutes,
+        'accessTokenExpiresAt': accessTokenExpiresAt.toIso8601String(),
+        'refreshToken': refreshToken,
+        'refreshTokenExpiresAt': refreshTokenExpiresAt.toIso8601String(),
         'userId': userId,
         'role': role.name,
         'fullName': fullName,
@@ -42,7 +50,9 @@ class AuthSessionModel {
 
   AuthSession toEntity() => AuthSession(
         accessToken: accessToken,
-        expiresInMinutes: expiresInMinutes,
+        accessTokenExpiresAt: accessTokenExpiresAt,
+        refreshToken: refreshToken,
+        refreshTokenExpiresAt: refreshTokenExpiresAt,
         userId: userId,
         role: role,
         fullName: fullName,

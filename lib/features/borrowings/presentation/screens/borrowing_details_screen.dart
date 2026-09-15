@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/error/failure.dart';
@@ -19,51 +21,78 @@ import '../../../../core/utils/date_formatting.dart';
 import '../../../../core/widgets/app_confirm_sheet.dart';
 import '../../../../core/widgets/book_action_success_snackbar.dart';
 
-class BorrowingDetailsScreen extends ConsumerWidget {
+class BorrowingDetailsScreen extends ConsumerStatefulWidget {
   const BorrowingDetailsScreen({super.key, required this.borrowingId});
   final String borrowingId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final asyncBorrowing = ref.watch(borrowingByIdProvider(borrowingId));
+  ConsumerState<BorrowingDetailsScreen> createState() => _BorrowingDetailsScreenState();
+}
+
+class _BorrowingDetailsScreenState extends ConsumerState<BorrowingDetailsScreen> {
+  static const double _coverWidth = 44; // must match _buildContent's Card SizedBox
+
+  String? _coverReadyKey; // book.imageUrl already precached
+  String? _precachingKey; // book.imageUrl currently being precached
+
+  @override
+  Widget build(BuildContext context) {
+    final asyncBorrowing = ref.watch(borrowingByIdProvider(widget.borrowingId));
     final returnState = ref.watch(returnActionControllerProvider);
 
     return AppGradientScaffold(
       appBar: AppBar(title: const Text('Borrowing Details')),
       body: asyncBorrowing.when(
+        skipLoadingOnReload: true,
         loading: () => const LoadingView(),
         error: (e, _) => ErrorStateView(
           error: e,
-          onRetry: () => ref.invalidate(borrowingByIdProvider(borrowingId)),
+          onRetry: () => ref.invalidate(borrowingByIdProvider(widget.borrowingId)),
         ),
         data: (borrowing) {
           final asyncBook = ref.watch(bookByIdProvider(borrowing.bookId));
           return asyncBook.when(
+            skipLoadingOnReload: true,
             loading: () => const LoadingView(),
             error: (e, _) => const Center(
               child: Text('Could not load book details.', style: AppTextStyles.bodyMd),
             ),
             data: (book) {
               ref.listen(returnActionControllerProvider, (previous, next) {
-                if (next.value != null && next.value!.id == borrowingId && !next.isLoading) {
+                if (next.value != null && next.value!.id == widget.borrowingId && !next.isLoading) {
                   final returnedBorrowing = next.value!;
-                  BookActionSuccessSheet.show(
+                  unawaited(BookActionSuccessSheet.show(
                     context,
+                    book: book,
                     title: book.title,
                     heading: 'Book Returned!',
                     message: 'Thanks for returning ${book.title}.\nIt\'s back on the shelf for the next reader.',
-                    dateLabel: returnedBorrowing.returnedDate == null
-                        ? 'Returned today'
-                        : formatReturnedLabel(returnedBorrowing.returnedDate!),
-                  );
+                    borrowedDate: returnedBorrowing.borrowedDate,
+                    returnDate: returnedBorrowing.returnedDate ?? DateTime.now(),
+                  ));
                 }
               });
+
+              _ensureCoverPrecached(book);
+              if (book.imageUrl != null && _coverReadyKey != book.imageUrl) {
+                return const LoadingView();
+              }
               return _buildContent(context, ref, borrowing, book, returnState);
             },
           );
         },
       ),
     );
+  }
+
+  void _ensureCoverPrecached(Book book) {
+    final key = book.imageUrl;
+    if (key == null || _coverReadyKey == key || _precachingKey == key) return;
+    _precachingKey = key;
+    BookCoverImage.precache(context, book, width: _coverWidth).then((_) {
+      if (!mounted) return;
+      setState(() => _coverReadyKey = key);
+    });
   }
 
   Widget _buildContent(
@@ -91,7 +120,7 @@ class BorrowingDetailsScreen extends ConsumerWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(AppRadius.sm),
-                      child: SizedBox(width: 44, height: 60, child: BookCoverImage(book: book)),
+                      child: SizedBox(width: _coverWidth, height: 60, child: BookCoverImage(book: book)),
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(

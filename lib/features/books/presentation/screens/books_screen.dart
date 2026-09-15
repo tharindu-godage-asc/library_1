@@ -60,9 +60,6 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
     final asyncBooks = ref.watch(bookListProvider);
 
     return AppGradientScaffold(
-      // No horizontal inset here — the two book shelves need to scroll
-      // edge-to-edge (see BookShelf's doc comment). Everything else applies
-      // AppSpacing.screenHorizontal itself, section by section, below.
       padding: const EdgeInsets.only(top: AppSpacing.screenHorizontal),
       body: asyncBooks.when(
         loading: () => const LoadingView(),
@@ -72,10 +69,6 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
         ),
         data: (books) {
           final asyncBorrowings = ref.watch(myBorrowingsProvider);
-          // Fails soft: Books doesn't block on borrowings loading — the
-          // Reminder banner just doesn't show yet/at all if this is slow
-          // or errors. A deliberate simplification, not a general pattern
-          // for every cross-feature dependency.
           return asyncBorrowings.when(
             loading: () => _buildContent(books, const []),
             error: (_, _) => _buildContent(books, const []),

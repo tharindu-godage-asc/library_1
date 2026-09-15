@@ -23,12 +23,20 @@ class EmailAlreadyExistsFailure extends Failure {
   const EmailAlreadyExistsFailure(super.message);
 }
 
+class InvalidRefreshTokenFailure extends Failure {
+  const InvalidRefreshTokenFailure(super.message);
+}
+
 class BookUnavailableFailure extends Failure {
   const BookUnavailableFailure(super.message);
 }
 
 class BorrowingLimitExceededFailure extends Failure {
   const BorrowingLimitExceededFailure(super.message);
+}
+
+class AlreadyBorrowedFailure extends Failure {
+  const AlreadyBorrowedFailure(super.message);
 }
 
 class AlreadyReturnedFailure extends Failure {

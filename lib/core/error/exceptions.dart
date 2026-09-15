@@ -17,3 +17,8 @@ class EmailAlreadyExistsException implements Exception {
   const EmailAlreadyExistsException(this.message);
   final String message;
 }
+
+class InvalidRefreshTokenException implements Exception {
+  const InvalidRefreshTokenException(this.message);
+  final String message;
+}
