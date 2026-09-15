@@ -135,3 +135,29 @@ docs/              one dated write-up per phase: objective, what was built,
 - Consider `equatable` for `Failure` once tests start asserting on
   `Either`/`Failure` values directly (not needed yet — see `docs/` decision
   log).
+- **Backend implementation** — every feature (Books, Auth, Borrowings,
+  Members, Notifications) currently runs on mock in-memory or bundled-JSON
+  data sources. Stand up a real backend (REST/GraphQL API or a BaaS like
+  Firebase/Supabase) and swap it in behind the existing repository
+  interfaces in each feature's `data/` layer — `domain`/`presentation`
+  shouldn't need to change. Needed alongside this:
+  - Real auth server issuing the access/refresh tokens `AuthController`
+    already expects, instead of the mock token issuer.
+  - Persistent storage for borrow/return state, member profiles, and book
+    inventory (replacing `books.json`).
+  - Real push notifications (FCM/APNs) instead of notifications derived
+    client-side from Borrowings + Books data.
+- **What else we can do** (not yet started, no backend dependency):
+  - Automated test suite (unit tests for use cases/repositories, widget
+    tests for key screens, integration tests for the Auth/Borrowings
+    flows) — see the existing test-coverage gaps above.
+  - CI pipeline (lint, `flutter analyze`, test, build) on PRs.
+  - Pagination / infinite scroll for the Books list once the catalog is
+    backend-driven and no longer a fixed bundled JSON file.
+  - Dark mode / theming support.
+  - Localization (i18n) — all strings are currently hardcoded English.
+  - Analytics and crash reporting (e.g. Firebase Crashlytics/Analytics).
+  - Deep linking (see the existing TODO above) once there's a backend
+    reason to link into specific books/borrowings from outside the app.
+  - App store release prep — app icons, signing configs, Play
+    Store/App Store listings, versioning strategy.
