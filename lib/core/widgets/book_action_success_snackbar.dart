@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../features/books/domain/entities/book.dart';
 import '../../features/books/presentation/widgets/book_cover_image.dart';
@@ -189,7 +190,11 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                       width: double.infinity,
                       height: 42,
                       child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          final router = GoRouter.of(context);
+                          Navigator.of(context).pop();
+                          router.go('/home');
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: AppColors.textOnPrimary,
