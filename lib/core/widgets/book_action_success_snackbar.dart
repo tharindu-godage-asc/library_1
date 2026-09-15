@@ -193,7 +193,9 @@ class BookActionSuccessSnackBar extends StatelessWidget {
                         onPressed: () {
                           final router = GoRouter.of(context);
                           Navigator.of(context).pop();
-                          router.go('/home');
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            router.go('/home');
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
