@@ -1,0 +1,15 @@
+/// Spacing scale — always use these instead of literal numbers in widgets.
+class AppSpacing {
+  AppSpacing._();
+
+  static const xs = 4.0;
+  static const sm = 8.0;
+  static const md = 12.0;
+  static const lg = 16.0;
+  static const xl = 24.0;
+  static const xxl = 32.0;
+
+  /// Standard horizontal screen-content margin (matches
+  /// AppGradientScaffold's default padding).
+  static const screenHorizontal = 20.0;
+}

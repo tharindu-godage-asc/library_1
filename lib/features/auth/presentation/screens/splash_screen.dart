@@ -6,19 +6,21 @@
 // tokens as the rest of the app instead of baking them into a rendered file.
 //
 // Dependencies to add to pubspec.yaml:
-//   google_fonts: ^6.0.0
 //   path_drawing: ^1.0.1
 //
-// Usage:
-//   Navigator.of(context).pushReplacement(
-//     MaterialPageRoute(builder: (_) => const SplashScreen()),
-//   );
-// or wire `onFinished` below to your router once the hold duration elapses.
+// Timing/navigation note: this widget is purely decorative — it holds no
+// timer and drives no navigation of its own. The actual "how long does
+// the splash stay up" and "where do we go next" logic lives entirely in
+// appBootstrapProvider (lib/core/bootstrap/app_bootstrap_provider.dart,
+// its own 2.4s Future.delayed) + app_router.dart's `redirect`. An earlier
+// version of this widget had its own `holdDuration`/`onFinished` params
+// for self-directed navigation, but the route never passed them, so that
+// mechanism was always inert — removed rather than kept as a second,
+// disconnected source of truth for the same 2.4s number.
 
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 /// BooksnU cozy palette — same hex values as booksnu-color-tokens.json.
@@ -35,12 +37,7 @@ class _C {
 }
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key, this.holdDuration = const Duration(milliseconds: 2400), this.onFinished});
-
-  /// How long the splash stays up before [onFinished] fires. Set to null-safe
-  /// no-op if you're driving navigation from session-restore logic instead.
-  final Duration holdDuration;
-  final VoidCallback? onFinished;
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -62,10 +59,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.initState();
     _loop = AnimationController(vsync: this, duration: const Duration(days: 1))..forward();
     _entrance = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600))..forward();
-
-    if (widget.onFinished != null) {
-      Future.delayed(widget.holdDuration, widget.onFinished!);
-    }
   }
 
   @override
@@ -191,7 +184,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           wordmark,
           Text(
             'BooksNu',
-            style: GoogleFonts.bricolageGrotesque(
+            style: const TextStyle(
+              fontFamily: 'Bricolage Grotesque',
               fontWeight: FontWeight.w800,
               fontSize: 42,
               letterSpacing: -0.5,
@@ -204,7 +198,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           tagline,
           Text(
             'Read more. Discover more.',
-            style: GoogleFonts.plusJakartaSans(
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
               fontWeight: FontWeight.w500,
               fontSize: 15,
               letterSpacing: 0.2,
