@@ -1,5 +1,7 @@
 # Phase 3 — Auth Vertical Slice
 
+> For the auth feature's current, up-to-date implementation (including token expiry/refresh-rotation added after this phase), see [auth-flow-implementation-guide.md](./auth-flow-implementation-guide.md).
+
 ## Objective
 
 A second vertical slice through the same Clean Architecture shape

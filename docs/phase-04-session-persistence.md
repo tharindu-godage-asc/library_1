@@ -1,5 +1,7 @@
 # Phase 4 — Session Persistence, Onboarding Gate, Splash Wiring
 
+> For the auth feature's current, up-to-date implementation (including token expiry/refresh-rotation added after this phase), see [auth-flow-implementation-guide.md](./auth-flow-implementation-guide.md).
+
 ## Objective
 
 Close the two biggest TODOs left after Phase 3: every cold start began
