@@ -90,10 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ? null
                   : () {
                       if (_validate()) {
-                        ref.read(authControllerProvider.notifier).login(
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text,
-                            );
+                        ref.read(authControllerProvider.notifier).login();
                       }
                     },
             ),

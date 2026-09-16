@@ -156,12 +156,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ? null
                   : () {
                       if (_validate()) {
-                        ref.read(authControllerProvider.notifier).register(
-                              fullName: _nameController.text.trim(),
-                              email: _emailController.text.trim(),
-                              phoneNumber: _phoneController.text.trim(),
-                              password: _passwordController.text,
-                            );
+                        ref.read(authControllerProvider.notifier).register();
                       }
                     },
             ),
