@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../../../../core/auth/jwt_claims.dart';
@@ -30,6 +31,12 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
         KeycloakConfig.redirectUrl,
         issuer: KeycloakConfig.issuer,
         scopes: KeycloakConfig.scopes,
+        // Local Keycloak runs on plain HTTP in this pass (emulator-only,
+        // see KeycloakConfig) — AppAuth's Android library refuses non-HTTPS
+        // endpoints unless told otherwise. Gated to debug builds so this
+        // can't silently ship in a release build once KeycloakConfig.issuer
+        // points at a real, HTTPS host.
+        allowInsecureConnections: kDebugMode,
       ),
     );
     return _toSessionModel(response);
@@ -43,6 +50,7 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
         KeycloakConfig.redirectUrl,
         issuer: KeycloakConfig.issuer,
         scopes: KeycloakConfig.scopes,
+        allowInsecureConnections: kDebugMode,
         // Keycloak 26's "Initiating User Registration" support — jumps
         // straight to the hosted sign-up form instead of the login form.
         additionalParameters: const {'prompt': 'create'},
@@ -62,6 +70,7 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
           scopes: KeycloakConfig.scopes,
           refreshToken: refreshToken,
           grantType: GrantType.refreshToken,
+          allowInsecureConnections: kDebugMode,
         ),
       );
       return _toSessionModel(response);

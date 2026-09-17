@@ -27,7 +27,10 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["appAuthRedirectScheme"] = "com.example.library_1"
+        // Must stay in sync with KeycloakConfig.redirectUrl — underscore-free
+        // since URI scheme syntax (RFC 3986) doesn't allow it, unlike the
+        // Android applicationId above.
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.example.library1"
     }
 
     buildTypes {

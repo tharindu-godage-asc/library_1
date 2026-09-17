@@ -5,6 +5,9 @@ class KeycloakConfig {
 
   static const issuer = 'http://10.0.2.2:8081/realms/library';
   static const clientId = 'library-flutter';
-  static const redirectUrl = 'com.example.library_1:/oauthredirect';
+  // Underscore-free by necessity, not convention — it doesn't need to match
+  // the Android applicationId (com.example.library_1); URI scheme syntax
+  // (RFC 3986) disallows underscores, so "library_1" can't be reused as-is.
+  static const redirectUrl = 'com.example.library1:/oauthredirect';
   static const scopes = ['openid', 'profile', 'email'];
 }
