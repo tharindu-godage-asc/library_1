@@ -82,10 +82,15 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
           if (book.imageUrl != null && _coverReadyKey != book.imageUrl) {
             return const LoadingView();
           }
-          final alreadyBorrowed = _justBorrowed ||
-              myBorrowings.any(
-                (b) => b.bookId == book.id && b.status != BorrowingStatus.returned,
-              );
+          Borrowing? activeBorrowing;
+          for (final b in myBorrowings) {
+            if (b.bookId == book.id && b.status != BorrowingStatus.returned) {
+              activeBorrowing = b;
+              break;
+            }
+          }
+          final alreadyBorrowed = _justBorrowed || activeBorrowing != null;
+          final isOverdue = activeBorrowing?.status == BorrowingStatus.overdue;
           return _buildContent(
             context,
             ref,
@@ -93,6 +98,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
             actionState.isLoading,
             session,
             alreadyBorrowed,
+            isOverdue,
           );
         },
       ),
@@ -120,6 +126,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
     bool isBorrowing,
     AuthSession? session,
     bool alreadyBorrowed,
+    bool isOverdue,
   ) {
     final buttonLabel = alreadyBorrowed
         ? 'Already borrowed'
@@ -147,9 +154,9 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
           StatusBadge(
-            status: book.isAvailable
-                ? BadgeStatus.available
-                : BadgeStatus.overdue,
+            status: !book.isAvailable
+                ? (isOverdue ? BadgeStatus.overdue : BadgeStatus.borrowed)
+                : BadgeStatus.available,
           ),
           if (book.description != null) ...[
             const SizedBox(height: AppSpacing.lg),
