@@ -34,7 +34,7 @@ class BookCard extends StatelessWidget {
                     Text(book.title, style: AppTextStyles.bodyLg, maxLines: 1, overflow: TextOverflow.ellipsis),
                     Text(book.author, style: AppTextStyles.caption),
                     const SizedBox(height: AppSpacing.xs),
-                    StatusBadge(status: book.isAvailable ? BadgeStatus.available : BadgeStatus.overdue),
+                    StatusBadge(status: book.isAvailable ? BadgeStatus.available : BadgeStatus.borrowed),
                   ],
                 ),
               ),
