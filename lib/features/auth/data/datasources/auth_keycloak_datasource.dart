@@ -11,6 +11,13 @@ abstract class AuthKeycloakDataSource {
   Future<AuthSessionModel> login();
   Future<AuthSessionModel> register();
   Future<AuthSessionModel> refresh({required String refreshToken});
+
+  /// Ends the Keycloak-side SSO session (the browser/custom-tab cookie),
+  /// not just the locally-cached tokens — without this, a fresh login()
+  /// silently re-authenticates through that still-live cookie instead of
+  /// showing the credential form. Best-effort: callers shouldn't fail the
+  /// whole logout over this.
+  Future<void> endSession({required String idToken});
 }
 
 class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
@@ -53,10 +60,25 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
         allowInsecureConnections: kDebugMode,
         // Keycloak 26's "Initiating User Registration" support — jumps
         // straight to the hosted sign-up form instead of the login form.
-        additionalParameters: const {'prompt': 'create'},
+        // Must go through promptValues, not additionalParameters: AppAuth's
+        // Android builder has a dedicated setter for "prompt" and throws if
+        // it's also present in additionalParameters (IllegalArgumentException,
+        // uncaught, crashes the app on register()).
+        promptValues: const ['create'],
       ),
     );
     return _toSessionModel(response);
+  }
+
+  @override
+  Future<void> endSession({required String idToken}) async {
+    await _appAuth.endSession(
+      EndSessionRequest(
+        idTokenHint: idToken,
+        issuer: KeycloakConfig.issuer,
+        allowInsecureConnections: kDebugMode,
+      ),
+    );
   }
 
   @override
@@ -99,6 +121,7 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
       role: (roles?.contains('Admin') ?? false) ? UserRole.admin : UserRole.member,
       fullName: claims['name'] as String? ?? '',
       email: claims['email'] as String? ?? '',
+      idToken: response.idToken,
     );
   }
 

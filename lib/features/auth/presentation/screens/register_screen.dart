@@ -1,150 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/error/failure.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_confirm_sheet.dart';
 import '../../../../core/widgets/app_gradient_scaffold.dart';
-import '../../../../core/widgets/app_text_field.dart';
 import '../providers/auth_providers.dart';
 
-class RegisterScreen extends ConsumerStatefulWidget {
+class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
 
   @override
-  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends ConsumerState<RegisterScreen> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmController = TextEditingController();
-
-  String? _nameError, _emailError, _phoneError, _passwordError, _confirmError;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmController.dispose();
-    super.dispose();
-  }
-
-  bool _validate() {
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final phone = _phoneController.text.trim();
-    final password = _passwordController.text;
-    final confirm = _confirmController.text;
-
-    setState(() {
-      _nameError = name.isEmpty ? 'Full name is required' : null;
-      _emailError = email.isEmpty
-          ? 'Email is required'
-          : !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)
-              ? 'Enter a valid email'
-              : null;
-      _phoneError = phone.isEmpty ? 'Contact number is required' : null;
-      _passwordError = password.length < 6 ? 'Password must be at least 6 characters' : null;
-      // Confirm-password match is a presentation-only check — it's never
-      // meaningful to send "did these two fields match" to a backend.
-      _confirmError = confirm != password ? 'Passwords do not match' : null;
-    });
-
-    return [_nameError, _emailError, _phoneError, _passwordError, _confirmError].every((e) => e == null);
-  }
-
-  String _messageFor(Failure failure) => switch (failure) {
-        EmailAlreadyExistsFailure() => failure.message,
-        _ => 'Something went wrong. Please try again.',
-      };
-
-  // Any field with real content means leaving would lose something —
-  // matches the confirm-before-losing-work convention AppConfirmSheet
-  // already establishes elsewhere (borrow/return), which this screen
-  // was the one place skipping.
-  bool get _hasChanges =>
-      _nameController.text.isNotEmpty ||
-      _emailController.text.isNotEmpty ||
-      _phoneController.text.isNotEmpty ||
-      _passwordController.text.isNotEmpty ||
-      _confirmController.text.isNotEmpty;
-
-  Future<void> _confirmDiscardAndPop() async {
-    if (!_hasChanges) {
-      context.pop();
-      return;
-    }
-    final confirmed = await AppConfirmSheet.show(
-      context,
-      title: 'Discard this registration?',
-      message: 'Your entered details will be lost.',
-      confirmLabel: 'Discard',
-      cancelLabel: 'Keep editing',
-    );
-    if (!mounted || confirmed != true) return;
-    context.pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
-    return PopScope(
-      canPop: !_hasChanges,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _confirmDiscardAndPop();
-      },
-      child: AppGradientScaffold(
+    return AppGradientScaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: AppSpacing.xl),
             Text('Create account', style: AppTextStyles.headingLg),
-            const SizedBox(height: AppSpacing.xl),
-            AppTextField(label: 'Full Name', controller: _nameController, errorText: _nameError),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: 'Email',
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              errorText: _emailError,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: 'Contact Number',
-              controller: _phoneController,
-              keyboardType: TextInputType.phone,
-              errorText: _phoneError,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: 'Password',
-              controller: _passwordController,
-              obscureText: true,
-              errorText: _passwordError,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: 'Confirm Password',
-              controller: _confirmController,
-              obscureText: true,
-              errorText: _confirmError,
+            const SizedBox(height: AppSpacing.md),
+            // Account details are collected on Keycloak's own hosted sign-up
+            // page, not here — this screen only kicks off the redirect.
+            const Text(
+              "You'll be taken to a secure sign-up page to enter your details.",
+              style: AppTextStyles.bodyMd,
             ),
             const SizedBox(height: AppSpacing.xl),
             if (authState.hasError) ...[
               Text(
-                _messageFor(authState.error as Failure),
+                'Something went wrong. Please try again.',
                 style: AppTextStyles.bodyMd.copyWith(color: AppColors.danger),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -152,18 +41,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             AppButton(
               label: 'Register',
               isLoading: isLoading,
-              onPressed: isLoading
-                  ? null
-                  : () {
-                      if (_validate()) {
-                        ref.read(authControllerProvider.notifier).register();
-                      }
-                    },
+              onPressed: isLoading ? null : () => ref.read(authControllerProvider.notifier).register(),
             ),
             const SizedBox(height: AppSpacing.lg),
             Center(
               child: GestureDetector(
-                onTap: _confirmDiscardAndPop,
+                onTap: () => context.pop(),
                 child: RichText(
                   text: TextSpan(
                     style: AppTextStyles.bodyMd,
@@ -178,7 +61,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ],
         ),
       ),
-    )
     );
   }
 }
