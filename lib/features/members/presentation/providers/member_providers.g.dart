@@ -9,10 +9,10 @@ part of 'member_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(memberLocalDataSource)
-final memberLocalDataSourceProvider = MemberLocalDataSourceProvider._();
+@ProviderFor(memberDataSource)
+final memberDataSourceProvider = MemberDataSourceProvider._();
 
-final class MemberLocalDataSourceProvider
+final class MemberDataSourceProvider
     extends
         $FunctionalProvider<
           MemberLocalDataSource,
@@ -20,19 +20,19 @@ final class MemberLocalDataSourceProvider
           MemberLocalDataSource
         >
     with $Provider<MemberLocalDataSource> {
-  MemberLocalDataSourceProvider._()
+  MemberDataSourceProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'memberLocalDataSourceProvider',
+        name: r'memberDataSourceProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$memberLocalDataSourceHash();
+  String debugGetCreateSourceHash() => _$memberDataSourceHash();
 
   @$internal
   @override
@@ -42,7 +42,7 @@ final class MemberLocalDataSourceProvider
 
   @override
   MemberLocalDataSource create(Ref ref) {
-    return memberLocalDataSource(ref);
+    return memberDataSource(ref);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -54,8 +54,7 @@ final class MemberLocalDataSourceProvider
   }
 }
 
-String _$memberLocalDataSourceHash() =>
-    r'0dfebab44665bce4b175d9b621d17d6f2358ae63';
+String _$memberDataSourceHash() => r'5b88f689c459ddb8094bf2c091ff3babf7740d36';
 
 @ProviderFor(memberRepository)
 final memberRepositoryProvider = MemberRepositoryProvider._();
@@ -101,7 +100,7 @@ final class MemberRepositoryProvider
   }
 }
 
-String _$memberRepositoryHash() => r'53f11bd683eff9f008f0c5160de3e91675ce5e70';
+String _$memberRepositoryHash() => r'69cf3be23a80cf989efbb2d27517d71613b760bb';
 
 @ProviderFor(getMemberUseCase)
 final getMemberUseCaseProvider = GetMemberUseCaseProvider._();

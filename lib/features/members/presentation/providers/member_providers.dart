@@ -1,6 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../../core/network/api_providers.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../data/datasources/member_local_datasource.dart';
+import '../../data/datasources/member_remote_datasource.dart';
 import '../../data/repositories/member_repository_impl.dart';
 import '../../domain/entities/member.dart';
 import '../../domain/repositories/member_repository.dart';
@@ -10,10 +12,13 @@ import '../../domain/usecases/update_member.dart';
 part 'member_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-MemberLocalDataSource memberLocalDataSource(Ref ref) => MemberLocalDataSourceImpl();
+MemberLocalDataSource memberDataSource(Ref ref) => MemberRemoteDataSourceImpl(
+      ref.read(apiClientProvider),
+      () async => (await ref.read(secureSessionStorageProvider).read())?.accessToken,
+    );
 
 @Riverpod(keepAlive: true)
-MemberRepository memberRepository(Ref ref) => MemberRepositoryImpl(ref.read(memberLocalDataSourceProvider));
+MemberRepository memberRepository(Ref ref) => MemberRepositoryImpl(ref.read(memberDataSourceProvider));
 
 @riverpod
 GetMember getMemberUseCase(Ref ref) => GetMember(ref.read(memberRepositoryProvider));
