@@ -75,6 +75,13 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
     await _appAuth.endSession(
       EndSessionRequest(
         idTokenHint: idToken,
+        // Without this, AppAuth's end-session request has nothing to
+        // redirect back to once Keycloak finishes logging out — the browser
+        // just sits on Keycloak's page and this Future never resolves. Reuse
+        // the same custom-scheme redirect as login/register; Keycloak's
+        // client config must list it under "Valid post logout redirect URIs"
+        // (or have that set to "+") or Keycloak will refuse it.
+        postLogoutRedirectUrl: KeycloakConfig.redirectUrl,
         issuer: KeycloakConfig.issuer,
         allowInsecureConnections: kDebugMode,
       ),

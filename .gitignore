@@ -4,6 +4,9 @@
 *.pyc
 *.swp
 .DS_Store
+
+# Environment config — local/per-developer, see .env.example
+.env
 .atom/
 .build/
 .buildlog/
