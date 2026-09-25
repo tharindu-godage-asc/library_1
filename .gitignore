@@ -7,6 +7,8 @@
 
 # Environment config — local/per-developer, see .env.example
 .env
+.env.*
+!.env.example
 .atom/
 .build/
 .buildlog/
