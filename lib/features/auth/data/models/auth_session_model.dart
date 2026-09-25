@@ -10,6 +10,7 @@ class AuthSessionModel {
     required this.role,
     required this.fullName,
     required this.email,
+    this.idToken,
   });
 
   final String accessToken;
@@ -20,6 +21,7 @@ class AuthSessionModel {
   final UserRole role;
   final String fullName;
   final String email;
+  final String? idToken;
 
   factory AuthSessionModel.fromJson(Map<String, dynamic> json) => AuthSessionModel(
         accessToken: json['accessToken'] as String,
@@ -30,6 +32,7 @@ class AuthSessionModel {
         role: _parseRole(json['role']),
         fullName: json['fullName'] as String,
         email: json['email'] as String,
+        idToken: json['idToken'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -41,6 +44,7 @@ class AuthSessionModel {
         'role': role.name,
         'fullName': fullName,
         'email': email,
+        'idToken': idToken,
       };
 
   static UserRole _parseRole(Object? value) {
@@ -57,5 +61,6 @@ class AuthSessionModel {
         role: role,
         fullName: fullName,
         email: email,
+        idToken: idToken,
       );
 }

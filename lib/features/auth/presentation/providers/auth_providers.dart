@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/preferences/onboarding_preference.dart';
 import '../../../../core/storage/secure_session_storage.dart';
+import '../../data/datasources/auth_keycloak_datasource.dart';
 import '../../data/datasources/auth_local_datasource.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/entities/auth_session.dart';
@@ -21,6 +23,9 @@ part 'auth_providers.g.dart';
 AuthLocalDataSource authLocalDataSource(Ref ref) => AuthLocalDataSourceImpl();
 
 @riverpod
+AuthKeycloakDataSource authKeycloakDataSource(Ref ref) => const AuthKeycloakDataSourceImpl(FlutterAppAuth());
+
+@riverpod
 SecureSessionStorage secureSessionStorage(Ref ref) => const SecureSessionStorage(FlutterSecureStorage());
 
 @riverpod
@@ -30,7 +35,7 @@ OnboardingPreference onboardingPreference(Ref ref) => OnboardingPreference();
 // Repository Layer
 @riverpod
 AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
-  ref.read(authLocalDataSourceProvider),
+  ref.read(authKeycloakDataSourceProvider),
   ref.read(secureSessionStorageProvider),
 );
 
@@ -109,10 +114,10 @@ class AuthController extends _$AuthController {
     );
   }
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login() async {
     state = const AsyncLoading();
     final useCase = ref.read(loginUserUseCaseProvider);
-    final result = await useCase(email: email, password: password);
+    final result = await useCase();
     if (!ref.mounted) return;
     state = result.match(
       (failure) => AsyncError(failure, StackTrace.current),
@@ -123,20 +128,10 @@ class AuthController extends _$AuthController {
     );
   }
 
-  Future<void> register({
-    required String fullName,
-    required String email,
-    required String phoneNumber,
-    required String password,
-  }) async {
+  Future<void> register() async {
     state = const AsyncLoading();
     final useCase = ref.read(registerMemberUseCaseProvider);
-    final result = await useCase(
-      fullName: fullName,
-      email: email,
-      phoneNumber: phoneNumber,
-      password: password,
-    );
+    final result = await useCase();
     if (!ref.mounted) return;
     state = result.match(
       (failure) => AsyncError(failure, StackTrace.current),

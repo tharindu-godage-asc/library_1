@@ -17,6 +17,7 @@ class SecureSessionStorage {
   static const _kRole = 'auth_role';
   static const _kFullName = 'auth_full_name';
   static const _kEmail = 'auth_email';
+  static const _kIdToken = 'auth_id_token';
 
   Future<void> save(AuthSession session) async {
     await Future.wait([
@@ -28,6 +29,10 @@ class SecureSessionStorage {
       _storage.write(key: _kRole, value: session.role.name),
       _storage.write(key: _kFullName, value: session.fullName),
       _storage.write(key: _kEmail, value: session.email),
+      if (session.idToken != null)
+        _storage.write(key: _kIdToken, value: session.idToken)
+      else
+        _storage.delete(key: _kIdToken),
     ]);
   }
 
@@ -42,6 +47,7 @@ class SecureSessionStorage {
     final roleStr = await _storage.read(key: _kRole);
     final fullName = await _storage.read(key: _kFullName);
     final email = await _storage.read(key: _kEmail);
+    final idToken = await _storage.read(key: _kIdToken);
 
     if (accessExpiresAt == null ||
         refreshToken == null ||
@@ -64,6 +70,7 @@ class SecureSessionStorage {
         role: UserRole.values.byName(roleStr),
         fullName: fullName,
         email: email,
+        idToken: idToken,
       );
     } on FormatException {
       await clear(); // stored session predates this shape — treat as no session
@@ -81,6 +88,7 @@ class SecureSessionStorage {
       _storage.delete(key: _kRole),
       _storage.delete(key: _kFullName),
       _storage.delete(key: _kEmail),
+      _storage.delete(key: _kIdToken),
     ]);
   }
 }
