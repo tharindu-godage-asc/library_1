@@ -1,5 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../../core/network/api_providers.dart';
+import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../data/datasources/book_local_datasource.dart';
+import '../../data/datasources/book_remote_datasource.dart';
 import '../../data/repositories/book_repository_impl.dart';
 import '../../domain/entities/book.dart';
 import '../../domain/repositories/book_repository.dart';
@@ -9,7 +12,10 @@ import '../../domain/usecases/get_books.dart';
 part 'book_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-BookLocalDataSource bookLocalDataSource(Ref ref) => BookLocalDataSourceImpl();
+BookLocalDataSource bookLocalDataSource(Ref ref) => BookRemoteDataSourceImpl(
+      ref.read(apiClientProvider),
+      () async => (await ref.read(secureSessionStorageProvider).read())?.accessToken,
+    );
 
 @Riverpod(keepAlive: true)
 BookRepository bookRepository(Ref ref) =>
