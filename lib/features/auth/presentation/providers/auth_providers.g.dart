@@ -57,6 +57,54 @@ final class AuthLocalDataSourceProvider
 String _$authLocalDataSourceHash() =>
     r'c8ddb83d401afd75f7a248093d4bcbe2a2ef454e';
 
+@ProviderFor(authKeycloakDataSource)
+final authKeycloakDataSourceProvider = AuthKeycloakDataSourceProvider._();
+
+final class AuthKeycloakDataSourceProvider
+    extends
+        $FunctionalProvider<
+          AuthKeycloakDataSource,
+          AuthKeycloakDataSource,
+          AuthKeycloakDataSource
+        >
+    with $Provider<AuthKeycloakDataSource> {
+  AuthKeycloakDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authKeycloakDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authKeycloakDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthKeycloakDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AuthKeycloakDataSource create(Ref ref) {
+    return authKeycloakDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthKeycloakDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthKeycloakDataSource>(value),
+    );
+  }
+}
+
+String _$authKeycloakDataSourceHash() =>
+    r'0a9dcb3145801adcf32b90c44334660352d10503';
+
 @ProviderFor(secureSessionStorage)
 final secureSessionStorageProvider = SecureSessionStorageProvider._();
 
@@ -192,7 +240,7 @@ final class AuthRepositoryProvider
   }
 }
 
-String _$authRepositoryHash() => r'199761b11b59ee2a0e1591b355ec5b16a61ec5e0';
+String _$authRepositoryHash() => r'cefded217dcf95584820eaea2c9c99a2f885f9a6';
 
 @ProviderFor(loginUserUseCase)
 final loginUserUseCaseProvider = LoginUserUseCaseProvider._();
@@ -426,7 +474,7 @@ final class AuthControllerProvider
   AuthController create() => AuthController();
 }
 
-String _$authControllerHash() => r'3482db713740b90cb9924c1450d56ec81d4c0b2e';
+String _$authControllerHash() => r'afe84baa423f2132cf8f322a470c11d202e3c2b8';
 
 abstract class _$AuthController extends $AsyncNotifier<AuthSession?> {
   FutureOr<AuthSession?> build();

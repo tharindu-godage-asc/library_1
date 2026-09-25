@@ -7,17 +7,7 @@ class RegisterMember {
   const RegisterMember(this._repository);
   final AuthRepository _repository;
 
-  Future<Either<Failure, AuthSession>> call({
-    required String fullName,
-    required String email,
-    required String phoneNumber,
-    required String password,
-  }) {
-    return _repository.register(
-      fullName: fullName,
-      email: email,
-      phoneNumber: phoneNumber,
-      password: password,
-    );
+  Future<Either<Failure, AuthSession>> call() {
+    return _repository.register();
   }
 }

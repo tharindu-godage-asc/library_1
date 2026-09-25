@@ -7,10 +7,7 @@ class LoginUser {
   const LoginUser(this._repository);
   final AuthRepository _repository;
 
-  Future<Either<Failure, AuthSession>> call({
-    required String email,
-    required String password,
-  }) {
-    return _repository.login(email: email, password: password);
+  Future<Either<Failure, AuthSession>> call() {
+    return _repository.login();
   }
 }

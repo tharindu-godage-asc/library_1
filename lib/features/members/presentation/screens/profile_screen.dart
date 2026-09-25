@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/widgets/error_state_view.dart';
+import '../../../../core/network/api_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -21,15 +23,68 @@ class ProfileScreen extends ConsumerWidget {
     final asyncProfile = ref.watch(myProfileProvider);
 
     return AppGradientScaffold(
-      body: asyncProfile.when(
-        loading: () => const LoadingView(),
-        error: (e, _) => ErrorStateView(
-          error: e,
-          onRetry: () => ref.invalidate(myProfileProvider),
-        ),
-        data: (member) => member == null
-            ? const Center(child: Text('Not signed in.', style: AppTextStyles.bodyMd))
-            : _ProfileBody(member: member),
+      body: Column(
+        children: [
+          Expanded(
+            child: asyncProfile.when(
+              loading: () => const LoadingView(),
+              error: (e, _) => ErrorStateView(
+                error: e,
+                onRetry: () => ref.invalidate(myProfileProvider),
+              ),
+              data: (member) => member == null
+                  ? const Center(child: Text('Not signed in.', style: AppTextStyles.bodyMd))
+                  : _ProfileBody(member: member),
+            ),
+          ),
+          // Manual, one-off proof that the API accepts the session's token
+          // (docs/phase-13 §"what's left" item 2) — deliberately not called
+          // from login/register per that feature's spec non-goals.
+          if (kDebugMode) const _DebugWhoamiButton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _DebugWhoamiButton extends ConsumerWidget {
+  const _DebugWhoamiButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: OutlinedButton(
+        onPressed: () => _run(context, ref),
+        child: const Text('Debug: call /keycloak-whoami'),
+      ),
+    );
+  }
+
+  Future<void> _run(BuildContext context, WidgetRef ref) async {
+    final session = await ref.read(secureSessionStorageProvider).read();
+    if (!context.mounted) return;
+    if (session == null) {
+      _showResult(context, 'No stored session — log in first.');
+      return;
+    }
+    try {
+      final result = await ref.read(apiClientProvider).keycloakWhoami(accessToken: session.accessToken);
+      if (!context.mounted) return;
+      _showResult(context, result.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+      _showResult(context, 'Failed: $e');
+    }
+  }
+
+  void _showResult(BuildContext context, String message) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('keycloak-whoami result'),
+        content: SingleChildScrollView(child: Text(message)),
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
     );
   }
