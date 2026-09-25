@@ -62,8 +62,6 @@ class BorrowBook {
       return const Left(BorrowingLimitExceededFailure('You already have 3 active borrowings.'));
     }
 
-    (await _bookRepository.updateBook(book!.borrowCopy())).match((f) => earlyFailure = f, (_) {});
-    if (earlyFailure != null) return Left(earlyFailure!);
 
     final now = DateTime.now();
     final newBorrowing = Borrowing(

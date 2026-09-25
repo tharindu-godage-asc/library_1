@@ -21,6 +21,31 @@ class BorrowingModel extends Borrowing {
         status: _parseStatus(json['status']),
       );
 
+  /// Library.Api's BorrowingResponse: {id, bookId, memberId, borrowedAt,
+  /// dueDate, returnedAt, status}. `status` is an int (1 = Active,
+  /// 2 = Returned) — the backend has no overdue value, so an unreturned
+  /// borrowing past its due date is flagged overdue here.
+  factory BorrowingModel.fromApiJson(Map<String, dynamic> json) {
+    final dueDate = DateTime.parse(json['dueDate'] as String).toLocal();
+    final returned = json['status'] == 2;
+    final status = returned
+        ? BorrowingStatus.returned
+        : DateTime.now().isAfter(dueDate)
+            ? BorrowingStatus.overdue
+            : BorrowingStatus.borrowed;
+    return BorrowingModel(
+      id: json['id'] as String,
+      bookId: json['bookId'] as String,
+      memberId: json['memberId'] as String,
+      borrowedDate: DateTime.parse(json['borrowedAt'] as String).toLocal(),
+      dueDate: dueDate,
+      returnedDate: _parseNullableDateTime(json['returnedAt'] == null
+          ? null
+          : DateTime.parse(json['returnedAt'] as String).toLocal()),
+      status: status,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'id': id, 'bookId': bookId, 'memberId': memberId,
         'borrowedDate': borrowedDate.toIso8601String(),

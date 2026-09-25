@@ -2,7 +2,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../books/presentation/providers/book_providers.dart';
 import '../../../members/presentation/providers/member_providers.dart';
+import '../../../../core/network/api_providers.dart';
 import '../../data/datasources/borrowing_local_datasource.dart';
+import '../../data/datasources/borrowing_remote_datasource.dart';
 import '../../data/repositories/borrowing_repository_impl.dart';
 import '../../domain/entities/borrowing.dart';
 import '../../domain/repositories/borrowing_repository.dart';
@@ -12,7 +14,10 @@ import '../../domain/usecases/return_borrowing.dart';
 part 'borrowing_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-BorrowingLocalDataSource borrowingLocalDataSource(Ref ref) => BorrowingLocalDataSourceImpl();
+BorrowingLocalDataSource borrowingLocalDataSource(Ref ref) => BorrowingRemoteDataSourceImpl(
+      ref.read(apiClientProvider),
+      () async => (await ref.read(secureSessionStorageProvider).read())?.accessToken,
+    );
 
 @Riverpod(keepAlive: true)
 BorrowingRepository borrowingRepository(Ref ref) =>
@@ -28,7 +33,7 @@ BorrowBook borrowBookUseCase(Ref ref) => BorrowBook(
 
 @riverpod
 ReturnBorrowing returnBorrowingUseCase(Ref ref) =>
-    ReturnBorrowing(ref.read(bookRepositoryProvider), ref.read(borrowingRepositoryProvider));
+    ReturnBorrowing(ref.read(borrowingRepositoryProvider));
 
 /// Re-derives memberId from the current session on every (re)build — if a
 /// different member ever logs in during the same app lifetime, this

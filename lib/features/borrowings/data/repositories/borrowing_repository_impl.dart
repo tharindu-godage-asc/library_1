@@ -16,7 +16,7 @@ class BorrowingRepositoryImpl implements BorrowingRepository {
       final model = await _dataSource.create(BorrowingModel.fromEntity(borrowing));
       return Right(model.toEntity());
     } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
+      return Left(_toFailure(e));
     }
   }
 
@@ -25,10 +25,8 @@ class BorrowingRepositoryImpl implements BorrowingRepository {
     try {
       final model = await _dataSource.update(BorrowingModel.fromEntity(borrowing));
       return Right(model.toEntity());
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
     } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
+      return Left(_toFailure(e));
     }
   }
 
@@ -38,7 +36,7 @@ class BorrowingRepositoryImpl implements BorrowingRepository {
       final models = await _dataSource.fetchForMember(memberId);
       return Right(models.map((m) => m.toEntity()).toList());
     } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
+      return Left(_toFailure(e));
     }
   }
 
@@ -47,10 +45,32 @@ class BorrowingRepositoryImpl implements BorrowingRepository {
     try {
       final model = await _dataSource.fetchById(id);
       return Right(model.toEntity());
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
     } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
+      return Left(_toFailure(e));
     }
+  }
+
+  /// Maps Library.Api's domain error codes onto the app's specific failures
+  /// so the UI can show a precise message; anything unrecognized stays a
+  /// generic failure.
+  Failure _toFailure(Object e) {
+    if (e is NotFoundException) return NotFoundFailure(e.message);
+    if (e is ApiProblemException) {
+      switch (e.code) {
+        case 'Book.NoAvailableCopies':
+          return BookUnavailableFailure(e.message);
+        case 'Borrowing.LimitExceeded':
+          return BorrowingLimitExceededFailure(e.message);
+        case 'Borrowing.AlreadyReturned':
+          return AlreadyReturnedFailure(e.message);
+        case 'Member.Inactive':
+          return MemberInactiveFailure(e.message);
+        case 'Book.NotFound':
+        case 'Borrowing.NotFound':
+        case 'Member.NotFound':
+          return NotFoundFailure(e.message);
+      }
+    }
+    return UnexpectedFailure(e.toString());
   }
 }
