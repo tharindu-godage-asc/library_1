@@ -82,7 +82,17 @@ class AuthKeycloakDataSourceImpl implements AuthKeycloakDataSource {
         // client config must list it under "Valid post logout redirect URIs"
         // (or have that set to "+") or Keycloak will refuse it.
         postLogoutRedirectUrl: KeycloakConfig.redirectUrl,
-        issuer: KeycloakConfig.issuer,
+        // Explicit endpoints instead of `issuer`: flutter_appauth 12.1.0's
+        // Android endSession never sets its allowInsecureConnections field
+        // (only login/token do), so issuer discovery over plain HTTP falls
+        // back to the HTTPS-only builder and crashes the app with an
+        // uncaught IllegalArgumentException in a fresh process. Skipping
+        // discovery sidesteps it.
+        serviceConfiguration: AuthorizationServiceConfiguration(
+          authorizationEndpoint: '${KeycloakConfig.issuer}/protocol/openid-connect/auth',
+          tokenEndpoint: '${KeycloakConfig.issuer}/protocol/openid-connect/token',
+          endSessionEndpoint: '${KeycloakConfig.issuer}/protocol/openid-connect/logout',
+        ),
         allowInsecureConnections: kDebugMode,
       ),
     );
